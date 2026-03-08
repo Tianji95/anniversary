@@ -16,9 +16,8 @@ desktop.ini
 *.bat
 部署指南.md
 
-# 大视频文件（超过50MB）
+# 大视频文件（超过100MB，GitHub限制）
 resources/202103-求婚/VID_20210314_193023.mp4
-resources/202305-婚礼照片/20220801婚礼微电影.mp4
 resources/202305-婚礼照片/20220801婚礼纪实.mp4
 resources/202305-婚礼照片/output.mp4
 

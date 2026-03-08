@@ -333,6 +333,16 @@
       display: block;
     }
 
+    /* 长图容器 */
+    .longimage-container {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    .longimage-container img {
+      pointer-events: auto;
+    }
+    }
+
     .media-text {
       margin-top: 2rem;
       padding: 1.2rem 1.5rem;
@@ -554,6 +564,7 @@
       .media-video { max-height: 50vh; background: #000; }
       .pdf-container { width: 64vw; height: 75vh; max-height: 600px; -webkit-overflow-scrolling: touch; min-height: 400px; }
       .pdf-container embed { display: block; width: 100%; height: 100%; object-fit: contain; }
+      .longimage-container { height: 65vh; max-height: 500px; }
       .media-bg { }
       .media-title { font-size: 1.5rem; }
       .media-quote { font-size: 0.9rem; }
@@ -605,9 +616,91 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.7; transform: scale(0.95); }
     }
+
+    /* ===== 开始引导页 ===== */
+    .start-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--ivory) 50%, var(--rose-light) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      cursor: pointer;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    .start-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .start-overlay .heart-icon {
+      font-size: 4rem;
+      animation: heartBeat 1.5s ease-in-out infinite;
+      margin-bottom: 1.5rem;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.15); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.1); }
+      60% { transform: scale(1); }
+    }
+    .start-overlay .start-title {
+      font-family: 'Playfair Display', 'Noto Serif SC', serif;
+      font-size: 2rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .start-overlay .start-subtitle {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      color: var(--text-soft);
+      margin-bottom: 2rem;
+    }
+    .start-overlay .start-btn {
+      background: var(--rose);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(201, 132, 106, 0.3);
+    }
+    .start-overlay .start-btn:hover {
+      background: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(184, 150, 110, 0.4);
+    }
+    .start-overlay .hint {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+    @media (max-width: 768px) {
+      .start-overlay .heart-icon { font-size: 3rem; }
+      .start-overlay .start-title { font-size: 1.5rem; }
+      .start-overlay .start-btn { padding: 12px 32px; font-size: 1rem; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- 开始引导页 -->
+  <div id="startOverlay" class="start-overlay">
+    <div class="heart-icon">💕</div>
+    <h1 class="start-title">我们的纪念日</h1>
+    <p class="start-subtitle">2019 — 2026</p>
+    <button class="start-btn" id="startBtn">点击开始</button>
+    <p class="hint">🎵 建议开启声音以获得最佳体验</p>
+  </div>
 
   <!-- 背景音乐 -->
   <audio id="bgMusic" loop>
@@ -707,10 +800,10 @@
         quote: '手牵手走在湖边，风吹过发梢，那一刻的甜蜜，至今难忘。',
         label: '2019·04'
       },
-      // 2019·05 生日PDF
+      // 2019·05 生日长图（原PDF）
       {
-        type: 'pdf',
-        src: 'resources/201905-birthday-colored.pdf',
+        type: 'longimage',
+        src: 'resources/201905-birthday-colored.png',
         date: '2019 · 05',
         title: '生日惊喜',
         quote: '这是我为你准备的生日祝福，每一页都写满了我的心意。愿你的每一个愿望都能实现，愿你的每一天都充满阳光。',
@@ -1256,29 +1349,28 @@
           '<p class="media-quote">"' + slide.quote + '"</p>' +
           '</div></div>';
         videoElements.push({ index: index });
-      } else if (slide.type === 'pdf') {
+      } else if (slide.type === 'longimage') {
+        // 长图类型 - 可滚动查看
         slideEl.classList.add('slide-media');
         var encodedSrc = encodeUrl(slide.src);
-        // 获取完整URL用于Google Docs Viewer
-        var fullUrl = window.location.origin + window.location.pathname.replace('index.html', '') + slide.src;
-        var googleViewerUrl = 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(fullUrl);
-        // 检测是否为移动设备
-        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        var pdfHtml = '';
-        if (isMobile) {
-          // 移动端使用iframe + 下载按钮
-          pdfHtml = '<div class="pdf-container" style="position:relative;">' +
-            '<iframe src="' + googleViewerUrl + '" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>' +
-            '<a href="' + encodedSrc + '" download class="pdf-download-btn" style="position:absolute;bottom:10px;right:10px;background:var(--rose);color:white;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:0.9rem;box-shadow:0 2px 8px rgba(0,0,0,0.2);">📥 下载PDF</a>' +
-            '</div>';
-        } else {
-          // 桌面端使用embed
-          pdfHtml = '<div class="pdf-container">' +
-            '<embed src="' + encodedSrc + '#toolbar=0&navpanes=0&scrollbar=0&zoom=100" type="application/pdf" width="100%" height="100%" />' +
-            '</div>';
-        }
+        slideEl.innerHTML = '<div class="media-content" style="width:100%;max-width:600px;">' +
+          '<div class="longimage-container" style="width:100%;height:70vh;overflow-y:auto;overflow-x:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);background:#fff;">' +
+          '<img src="' + encodedSrc + '" style="width:100%;height:auto;display:block;" alt="' + slide.title + '" />' +
+          '</div>' +
+          '<div class="media-text" style="margin-top:1rem;">' +
+          '<div class="media-date">' + slide.date + '</div>' +
+          '<h2 class="media-title">' + slide.title + '</h2>' +
+          '<p class="media-quote">"' + slide.quote + '"</p>' +
+          '<p style="font-size:0.85rem;color:var(--text-soft);margin-top:0.5rem;opacity:0.7;">↕️ 上下滑动查看完整内容</p>' +
+          '</div></div>';
+      } else if (slide.type === 'pdf') {
+        // PDF类型（保留兼容性）
+        slideEl.classList.add('slide-media');
+        var encodedSrc = encodeUrl(slide.src);
         slideEl.innerHTML = '<div class="media-content" style="width:100%;max-width:95%;">' +
-          pdfHtml +
+          '<div class="pdf-container">' +
+          '<embed src="' + encodedSrc + '#toolbar=0&navpanes=0&scrollbar=0&zoom=100" type="application/pdf" width="100%" height="100%" />' +
+          '</div>' +
           '<div class="media-text" style="margin-top:1rem;">' +
           '<div class="media-date">' + slide.date + '</div>' +
           '<h2 class="media-title">' + slide.title + '</h2>' +
@@ -1620,13 +1712,18 @@
       });
     }
 
-    // 页面加载完成后自动播放音乐
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        playMusic();
-        setupVideoListeners();
-      }, 1000);
+    // 开始按钮点击事件
+    var startOverlay = document.getElementById('startOverlay');
+    var startBtn = document.getElementById('startBtn');
+
+    startBtn.addEventListener('click', function() {
+      startOverlay.classList.add('hidden');
+      playMusic();
+      setupVideoListeners();
     });
+
+    // 初始化视频监听器
+    setupVideoListeners();
 
     // 开始自动播放
     animateProgress();
