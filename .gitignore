@@ -1,0 +1,27 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# 部署相关
+*.bat
+部署指南.md
+
+# 大视频文件（超过50MB）
+resources/202103-求婚/VID_20210314_193023.mp4
+resources/202305-婚礼照片/20220801婚礼微电影.mp4
+resources/202305-婚礼照片/20220801婚礼纪实.mp4
+resources/202305-婚礼照片/output.mp4
+
+# 备份文件夹
+resources/backup/
+废弃/

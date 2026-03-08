@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我们的纪念日 · 2019 — 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+SC:wght@300;400&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose: #c9846a;
+      --rose-light: #e8c5b8;
+      --gold: #b8966e;
+      --cream: #fdf8f4;
+      --ivory: #f5ede6;
+      --text: #4a3728;
+      --text-soft: #6b5548;
+      --white: #ffffff;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Lato', 'Noto Serif SC', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    /* ===== 轮播容器 ===== */
+    .fullpage-slider {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slider-container {
+      display: flex;
+      height: 100vh;
+      transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== 页面指示器 ===== */
+    .page-indicators {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+      max-height: 80vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding: 10px 0;
+    }
+
+    .page-indicators::-webkit-scrollbar {
+      display: none;
+    }
+
+    .indicator-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 132, 106, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      flex-shrink: 0;
+    }
+
+    .indicator-dot:hover {
+      background: rgba(201, 132, 106, 0.6);
+    }
+
+    .indicator-dot.active {
+      background: var(--rose);
+      transform: scale(1.3);
+      box-shadow: 0 0 15px rgba(201, 132, 106, 0.4);
+    }
+
+    .indicator-label {
+      position: absolute;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%) translateX(100%);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-soft);
+      opacity: 0;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .indicator-dot:hover .indicator-label {
+      opacity: 1;
+      transform: translateY(-50%) translateX(-35px);
+    }
+
+    /* 分类标签 */
+    .indicator-group-label {
+      font-size: 0.6rem;
+      color: var(--text-soft);
+      opacity: 0.5;
+      text-align: right;
+      padding: 5px 0;
+      letter-spacing: 0.15em;
+    }
+
+    /* ===== 导航箭头 ===== */
+    .nav-arrows {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 1000;
+      background: rgba(253, 248, 244, 0.95);
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(74, 55, 40, 0.1);
+      border: 1px solid var(--rose-light);
+    }
+
+    .nav-arrow {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: var(--rose);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-arrow:hover {
+      color: var(--white);
+      transform: scale(1.1);
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* 播放暂停按钮 */
+    .play-pause-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: var(--rose);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-pause-btn:hover {
+      color: var(--white);
+      transform: scale(1.1);
+    }
+
+    /* 进度条 */
+    .slide-progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--rose);
+      z-index: 10;
+      transition: width 0.1s linear;
+    }
+
+    /* ===== Hero 页面 ===== */
+    .slide-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(201,132,106,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(184,150,110,0.10) 0%, transparent 60%),
+        var(--cream);
+    }
+
+    .hero-date {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      color: var(--rose);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .hero-subtitle {
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--text-soft);
+      letter-spacing: 0.08em;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    .day-counter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+
+    .day-number {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 600;
+      color: var(--rose);
+      line-height: 1;
+    }
+
+    .day-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--text-soft);
+      text-transform: uppercase;
+    }
+
+    /* ===== 图片/视频/PDF 页面 ===== */
+    .slide-media {
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(30px) brightness(1.1) saturate(0.7);
+      transform: scale(1.05);
+    }
+
+    .media-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 900px;
+      padding: 2rem;
+      text-align: center;
+      animation: mediaFadeIn 1s ease;
+    }
+
+    .media-image, .media-video {
+      max-width: 85%;
+      max-height: 60vh;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(74, 55, 40, 0.15);
+    }
+
+    .media-video {
+      background: #000;
+    }
+
+    .pdf-container {
+      width: 64%;
+      height: 72vh;
+      max-width: 1040px;
+      max-height: 720px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(74, 55, 40, 0.15);
+      overflow: hidden;
+    }
+
+    .pdf-container embed,
+    .pdf-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .media-text {
+      margin-top: 2rem;
+      padding: 1.2rem 1.5rem;
+      background: rgba(253, 248, 244, 0.85);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      animation: mediaFadeIn 1s ease 0.3s both;
+      max-width: 650px;
+    }
+
+    .media-date {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--rose);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .media-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .media-quote {
+      font-size: 1.05rem;
+      color: var(--text-soft);
+      line-height: 1.9;
+      font-style: italic;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== 信 ===== */
+    .slide-letter {
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(201,132,106,0.08) 0%, transparent 50%),
+        var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .letter-card {
+      max-width: 700px;
+      background: var(--white);
+      border-radius: 4px;
+      padding: 4rem 4.5rem;
+      box-shadow:
+        0 2px 4px rgba(74,55,40,0.06),
+        0 20px 80px rgba(74,55,40,0.1);
+      position: relative;
+      animation: letterFadeIn 1s ease;
+    }
+
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      top: 2.5rem; bottom: 2.5rem;
+      left: 3rem;
+      width: 1px;
+      background: rgba(232, 197, 184, 0.5);
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--ivory);
+    }
+
+    .letter-date {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1rem;
+    }
+
+    .letter-greeting {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .letter-body {
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--text);
+      white-space: pre-line;
+      margin-bottom: 2.5rem;
+    }
+
+    .letter-sign {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--text-soft);
+      text-align: right;
+      font-size: 1rem;
+    }
+
+    /* ===== 情感终章 ===== */
+    .slide-final {
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(201,132,106,0.15) 0%, transparent 50%),
+        linear-gradient(180deg, var(--cream) 0%, var(--ivory) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .final-ornament {
+      font-size: 3rem;
+      color: var(--rose-light);
+      margin-bottom: 2rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .final-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .final-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--rose);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+
+    .final-content {
+      max-width: 750px;
+      font-family: 'Noto Serif SC', serif;
+      font-weight: 300;
+      font-size: 1.1rem;
+      line-height: 2.2;
+      color: var(--text);
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    .final-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .final-content em {
+      color: var(--rose);
+      font-style: italic;
+    }
+
+    .final-heart {
+      font-size: 2rem;
+      color: var(--rose);
+      margin-top: 1rem;
+      animation: heartBeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.15); }
+    }
+
+    .final-footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      letter-spacing: 0.15em;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+    }
+
+    /* ===== 动画 ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes mediaFadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes letterFadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .page-indicators {
+        right: 15px;
+      }
+      .media-image, .media-video { max-width: 90%; max-height: 65vh; }
+      .media-video { max-height: 50vh; background: #000; }
+      .pdf-container { width: 64vw; height: 75vh; max-height: 600px; -webkit-overflow-scrolling: touch; min-height: 400px; }
+      .pdf-container embed { display: block; width: 100%; height: 100%; object-fit: contain; }
+      .media-bg { }
+      .media-title { font-size: 1.5rem; }
+      .media-quote { font-size: 0.9rem; }
+      .media-text { padding: 0.8rem 1rem; min-height: 80px; }
+      .media-date, .media-title, .media-quote { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
+      .media-content { padding: 1rem; max-width: 95%; }
+      .letter-card { padding: 2.5rem 1.8rem; max-width: 95%; overflow-y: auto; max-height: 90vh; }
+      .letter-card::before { display: none; }
+      .nav-arrows { bottom: 20px; padding: 0.6rem 1.5rem; }
+      .nav-arrow, .play-pause-btn { width: 38px; height: 38px; }
+      .nav-arrow { width: 40px; height: 40px; font-size: 1rem; }
+      .final-title { font-size: 1.8rem; }
+      .final-subtitle { font-size: 1.2rem; }
+      .final-content { font-size: 1rem; }
+    }
+
+    /* 音乐控制按钮 */
+    .music-control {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(253, 248, 244, 0.95);
+      border: 2px solid var(--rose-light);
+      color: var(--rose);
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(74, 55, 40, 0.1);
+    }
+
+    .music-control:hover {
+      background: var(--rose);
+      color: var(--white);
+      transform: scale(1.1);
+    }
+
+    .music-control.playing #musicIcon {
+      animation: musicPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes musicPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.95); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景音乐 -->
+  <audio id="bgMusic" loop>
+    <source src="resources/music.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+  </audio>
+
+  <!-- 音乐控制按钮 -->
+  <div id="musicControl" class="music-control" title="点击播放/暂停音乐">
+    <span id="musicIcon">🎵</span>
+  </div>
+
+  <div class="fullpage-slider">
+    <div class="slider-container" id="sliderContainer">
+      <!-- 幻灯片将由JS动态生成 -->
+    </div>
+  </div>
+
+  <!-- 页面指示器 -->
+  <div class="page-indicators" id="pageIndicators">
+    <!-- 指示器将由JS动态生成 -->
+  </div>
+
+  <!-- 进度条 -->
+  <div class="slide-progress" id="slideProgress"></div>
+
+  <!-- 导航箭头 -->
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="prevPage">◀</button>
+    <button class="play-pause-btn" id="playPause">⏸</button>
+    <button class="nav-arrow" id="nextPage">▶</button>
+  </div>
+
+  <script>
+    // ===== 幻灯片数据 =====
+    var slidesData = [
+      // Hero 页面
+      {
+        type: 'hero',
+        label: '首页'
+      },
+      // 2019·02 梦开始的地方 (4张)
+      {
+        type: 'image',
+        src: 'resources/201902-梦开始的地方/微信图片_20260307223733_87_1.jpg',
+        date: '2019 · 02',
+        title: '梦开始的地方',
+        quote: '第一次看到你的照片，我想：这个女生超好看，如果能是我女朋友就好了。我不知道，那一眼会是余生的开始。',
+        label: '2019·02'
+      },
+      {
+        type: 'image',
+        src: 'resources/201902-梦开始的地方/微信图片_20260307223735_89_1.jpg',
+        date: '2019 · 02',
+        title: '初见',
+        quote: '那时候的我们，青涩又美好。每一次聊天，都让我心跳加速。',
+        label: '2019·02'
+      },
+      {
+        type: 'image',
+        src: 'resources/201902-梦开始的地方/微信图片_20260307223737_91_1.jpg',
+        date: '2019 · 02',
+        title: '心动',
+        quote: '你的笑容，像阳光一样温暖。我知道，我爱上你了。',
+        label: '2019·02'
+      },
+      {
+        type: 'image',
+        src: 'resources/201902-梦开始的地方/微信图片_20260307223738_92_1.jpg',
+        date: '2019 · 02',
+        title: '甜蜜',
+        quote: '那时候的每一天，都因为有你而变得特别。',
+        label: '2019·02'
+      },
+      // 2019·04 千岛湖 (3张)
+      {
+        type: 'image',
+        src: 'resources/201904-千岛湖/微信图片_20260307222236_63_1.jpg',
+        date: '2019 · 04',
+        title: '千岛湖之旅',
+        quote: '第一次一起出游，湖光山色，你笑起来比风景还好看。刚确认关系的我们，连公交车上的座位都不愿意分开坐。',
+        label: '2019·04'
+      },
+      {
+        type: 'image',
+        src: 'resources/201904-千岛湖/微信图片_20260307222236_64_1.jpg',
+        date: '2019 · 04',
+        title: '湖光山色',
+        quote: '千岛湖的水清澈见底，我们的爱情也像这湖水一样纯净。',
+        label: '2019·04'
+      },
+      {
+        type: 'image',
+        src: 'resources/201904-千岛湖/微信图片_20260307222239_67_1.jpg',
+        date: '2019 · 04',
+        title: '甜蜜时光',
+        quote: '手牵手走在湖边，风吹过发梢，那一刻的甜蜜，至今难忘。',
+        label: '2019·04'
+      },
+      // 2019·05 生日PDF
+      {
+        type: 'pdf',
+        src: 'resources/201905-birthday-colored.pdf',
+        date: '2019 · 05',
+        title: '生日惊喜',
+        quote: '这是我为你准备的生日祝福，每一页都写满了我的心意。愿你的每一个愿望都能实现，愿你的每一天都充满阳光。',
+        label: '2019·05'
+      },
+      // 2019·07 一起上自习 (2张)
+      {
+        type: 'image',
+        src: 'resources/201907-一起上自习/微信图片_20260307222232_58_1.jpg',
+        date: '2019 · 07',
+        title: '一起上自习',
+        quote: '在浙大一起自习，你认真学习的样子，我心里想：我女朋友好可爱，两个人一起努力好幸福。',
+        label: '2019·07'
+      },
+      {
+        type: 'image',
+        src: 'resources/201907-一起上自习/微信图片_20260307222233_59_1.jpg',
+        date: '2019 · 07',
+        title: '图书馆时光',
+        quote: '安静的自习室里，只有翻书声和我们相视一笑的默契。',
+        label: '2019·07'
+      },
+      // 2019·08 云南之行 (3张)
+      {
+        type: 'image',
+        src: 'resources/201908-云南/微信图片_20260307222225_50_1.jpg',
+        date: '2019 · 08',
+        title: '云南之行',
+        quote: '玉龙雪山高耸入云，洱海一望无际。我们一起骑着小电三轮，绕着洱海跑了一百公里。蓝月谷的水，至今记忆犹新。',
+        label: '2019·08'
+      },
+      {
+        type: 'image',
+        src: 'resources/201908-云南/微信图片_20260307222227_52_1.jpg',
+        date: '2019 · 08',
+        title: '洱海骑行',
+        quote: '骑着小电三轮，风吹过耳边，你在我身后紧紧抱着我。',
+        label: '2019·08'
+      },
+      {
+        type: 'image',
+        src: 'resources/201908-云南/微信图片_20260307222228_53_1.jpg',
+        date: '2019 · 08',
+        title: '蓝月谷',
+        quote: '蓝月谷的水蓝得像宝石一样，你说这是我们一起见过的最美的风景。',
+        label: '2019·08'
+      },
+      // 2020·10 大同订婚 (3张)
+      {
+        type: 'image',
+        src: 'resources/202010-大同/微信图片_20260307222219_43_1.jpg',
+        date: '2020 · 10',
+        title: '大同 · 订婚之旅',
+        quote: '准备订婚了，一起去大同云冈石窟。千年佛像见证我们的爱情，我们还去了煤矿博物馆和华严寺。',
+        label: '2020·10'
+      },
+      {
+        type: 'image',
+        src: 'resources/202010-大同/微信图片_20260307222222_46_1.jpg',
+        date: '2020 · 10',
+        title: '云冈石窟',
+        quote: '站在千年佛像前，我们许下了彼此的承诺。',
+        label: '2020·10'
+      },
+      {
+        type: 'image',
+        src: 'resources/202010-大同/微信图片_20260307222223_47_1.jpg',
+        date: '2020 · 10',
+        title: '华严古寺',
+        quote: '古寺钟声悠扬，我们的爱情也在岁月中沉淀下来。',
+        label: '2020·10'
+      },
+      // 2020·11 上海 (1张)
+      {
+        type: 'image',
+        src: 'resources/202011-上海/IMG_20201107_183140.jpg',
+        date: '2020 · 11',
+        title: '上海之行',
+        quote: '魔都的繁华，和你在一起，每一刻都值得纪念。',
+        label: '2020·11'
+      },
+      // 2021·03 南京 (2张)
+      {
+        type: 'image',
+        src: 'resources/202103-南京/faceu_-413_20210307134057918.jpg',
+        date: '2021 · 03',
+        title: '南京之旅',
+        quote: '秦淮河畔，夫子庙前，我们一起走过的每一条街道都充满回忆。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-南京/faceu_-413_20210307192804089.jpg',
+        date: '2021 · 03',
+        title: '金陵印象',
+        quote: '南京的春天，有你相伴，格外美丽。',
+        label: '2021·03'
+      },
+      // 2021·03 求婚 (6张照片+1个视频)
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/微信图片_20260307222210_31_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 准备',
+        quote: '紧张又期待，准备了好久的时刻，终于要来了。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/微信图片_20260307222211_32_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 现场',
+        quote: '单膝下跪的那一刻，世界都安静了。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/微信图片_20260307222211_33_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 感动',
+        quote: '你的眼泪，是我见过最珍贵的东西。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/微信图片_20260307222215_37_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 幸福',
+        quote: '你点头的那一刻，是我这辈子最幸福的时刻。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/微信图片_20260307222219_42_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 温馨',
+        quote: '这一刻的感动，我会永远铭记在心。',
+        label: '2021·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-求婚/faceu_-413_20210314193238780.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 美好',
+        quote: '这一天，是我们爱情新的开始。',
+        label: '2021·03'
+      },
+      {
+        type: 'video',
+        src: 'resources/202103-求婚/VID_20210314_193023.mp4',
+        poster: 'resources/202103-求婚/微信图片_20260307222210_31_1.jpg',
+        date: '2021 · 03 · 14',
+        title: '求婚 · 视频',
+        quote: '你说了「愿意」，那一刻是我这辈子最幸福的时刻。你感动的泪水，是我见过最美的画面。',
+        label: '求婚'
+      },
+      // 2021·03 领结婚证 (4张)
+      {
+        type: 'image',
+        src: 'resources/202103-领结婚证/微信图片_20260307222216_39_1.jpg',
+        date: '2021 · 03 · 18',
+        title: '领结婚证',
+        quote: '从今天起，我们就是合法夫妻了。这一纸证书，承载的是一生的承诺。',
+        label: '领证'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-领结婚证/微信图片_20260307222217_40_1.jpg',
+        date: '2021 · 03 · 18',
+        title: '红本本',
+        quote: '两本红红的结婚证，见证了我们的爱情。',
+        label: '领证'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-领结婚证/微信图片_20260307222218_41_1.jpg',
+        date: '2021 · 03 · 18',
+        title: '幸福时刻',
+        quote: '拿到结婚证的那一刻，我们都笑了。',
+        label: '领证'
+      },
+      {
+        type: 'image',
+        src: 'resources/202103-领结婚证/IMG_20210318_160238.jpg',
+        date: '2021 · 03 · 18',
+        title: '合法夫妻',
+        quote: '今天，我们正式成为一家人了。',
+        label: '领证'
+      },
+      // 2021·05 集体婚礼 (3张)
+      {
+        type: 'image',
+        src: 'resources/202105-集体婚礼/微信图片_20260307222213_35_1.jpg',
+        date: '2021 · 05',
+        title: '浙大集体婚礼',
+        quote: '在浙大校长的见证下，和数十对校友一起，我们许下了永恒的誓言。这一天，是我们人生的高光时刻。',
+        label: '2021·05'
+      },
+      {
+        type: 'image',
+        src: 'resources/202105-集体婚礼/微信图片_20260307222214_36_1.jpg',
+        date: '2021 · 05',
+        title: '集体婚礼现场',
+        quote: '百对新人在紫金港草坪上，一起喊出"我愿意"。',
+        label: '2021·05'
+      },
+      {
+        type: 'image',
+        src: 'resources/202105-集体婚礼/微信图片_20260307222215_38_1.jpg',
+        date: '2021 · 05',
+        title: '幸福时刻',
+        quote: '那一天的笑容，我会永远珍藏。',
+        label: '2021·05'
+      },
+      // 2021·07 婚纱照 (5张照片+1个视频)
+      {
+        type: 'image',
+        src: 'resources/202107-婚纱照/202107120114-034.jpg',
+        date: '2021 · 07',
+        title: '婚纱照',
+        quote: '虽然被蚊子咬了好多包，但每一张照片都是我们爱情的见证。穿上婚纱的你，是我见过最美的新娘。',
+        label: '婚纱照'
+      },
+      {
+        type: 'image',
+        src: 'resources/202107-婚纱照/202107120114-175.jpg',
+        date: '2021 · 07',
+        title: '婚纱照 · 优雅',
+        quote: '镜头下的我们，每一帧都是电影画面。',
+        label: '婚纱照'
+      },
+      {
+        type: 'image',
+        src: 'resources/202107-婚纱照/202107120114-200.jpg',
+        date: '2021 · 07',
+        title: '婚纱照 · 浪漫',
+        quote: '风吹过你的发梢，定格在最美好的瞬间。',
+        label: '婚纱照'
+      },
+      {
+        type: 'image',
+        src: 'resources/202107-婚纱照/202107120114-233.jpg',
+        date: '2021 · 07',
+        title: '婚纱照 · 幸福',
+        quote: '你的笑容，是我见过最美的风景。',
+        label: '婚纱照'
+      },
+      {
+        type: 'image',
+        src: 'resources/202107-婚纱照/微信图片_20260307222622_73_1.jpg',
+        date: '2021 · 07',
+        title: '婚纱照 · 甜美',
+        quote: '你的笑容，比婚纱更耀眼。',
+        label: '婚纱照'
+      },
+      {
+        type: 'video',
+        src: 'resources/202107-婚纱照/9月25日 郑天季 熊文靓441867138@qq.com.mp4',
+        poster: 'resources/202107-婚纱照/202107120114-034.jpg',
+        date: '2021 · 07',
+        title: '婚纱照 · 视频',
+        quote: '婚纱照拍摄花絮，记录下我们最美好的瞬间。',
+        label: '婚纱照'
+      },
+      // 2021·10 舟山 (2张)
+      {
+        type: 'image',
+        src: 'resources/202110-舟山/IMG_20211003_172940.jpg',
+        date: '2021 · 10',
+        title: '舟山之旅',
+        quote: '海边的风，吹过我们的发梢，那一刻的自由和浪漫，永远难忘。',
+        label: '2021·10'
+      },
+      {
+        type: 'image',
+        src: 'resources/202110-舟山/faceu_-413_20211002171335640.jpg',
+        date: '2021 · 10',
+        title: '海岛风光',
+        quote: '蓝天白云，沙滩海浪，和你一起，就是最好的旅行。',
+        label: '2021·10'
+      },
+      // 2022·01 元旦 (1张)
+      {
+        type: 'image',
+        src: 'resources/202201-元旦/微信图片_20260307222621_72_1.jpg',
+        date: '2022 · 01',
+        title: '元旦快乐',
+        quote: '新的一年，新的开始，有你相伴，每天都充满期待。',
+        label: '2022·01'
+      },
+      // 2023·05 婚礼 (1张照片+3个视频)
+      {
+        type: 'image',
+        src: 'resources/202305-婚礼照片/DSC09335.jpg',
+        date: '2023 · 05',
+        title: '我们的婚礼',
+        quote: '终于，在所有亲朋好友的祝福下，我们举办了婚礼。这一天，是我们人生的高光时刻。',
+        label: '2023·05'
+      },
+      {
+        type: 'video',
+        src: 'resources/202305-婚礼照片/20220801婚礼微电影.mp4',
+        date: '2022 · 08',
+        title: '婚礼微电影',
+        quote: '我们的婚礼微电影，记录下了那一天最珍贵的时刻。看着视频里的我们，仿佛又回到了那一天。',
+        label: '微电影'
+      },
+      {
+        type: 'video',
+        src: 'resources/202305-婚礼照片/20220801婚礼纪实.mp4',
+        date: '2022 · 08',
+        title: '婚礼纪实',
+        quote: '婚礼纪实视频里，每一个笑脸都那么真实。这一天，是我们人生的高光时刻。',
+        label: '纪实'
+      },
+      {
+        type: 'video',
+        src: 'resources/202305-婚礼照片/output.mp4',
+        date: '2022 · 08',
+        title: '婚礼花絮',
+        quote: '那些快乐的瞬间，都被记录下来了。',
+        label: '花絮'
+      },
+      // 2024·04 烧玻璃 (1张)
+      {
+        type: 'image',
+        src: 'resources/202404-烧玻璃/IMG_20240414_133323.jpg',
+        date: '2024 · 04',
+        title: '烧玻璃体验',
+        quote: '一起体验手工制作，专注地完成一件作品，这样的时光很珍贵。',
+        label: '2024·04'
+      },
+      // 2024·05 桂林 (3张)
+      {
+        type: 'image',
+        src: 'resources/202405-桂林/DSC04630.jpg',
+        date: '2024 · 05',
+        title: '桂林山水',
+        quote: '桂林山水甲天下，而你是我心中最美的风景。还偶遇到了我的挚友，旅行总是充满惊喜。',
+        label: '2024·05'
+      },
+      {
+        type: 'image',
+        src: 'resources/202405-桂林/IMG_20240502_215315.jpg',
+        date: '2024 · 05',
+        title: '漓江泛舟',
+        quote: '竹筏漂流在漓江上，两岸青山如画。',
+        label: '2024·05'
+      },
+      {
+        type: 'image',
+        src: 'resources/202405-桂林/faceu_-413_20240503165738332.jpg',
+        date: '2024 · 05',
+        title: '桂林印象',
+        quote: '山水之间的我们，是最美的风景。',
+        label: '2024·05'
+      },
+      // 2025·03 油菜花 (4张)
+      {
+        type: 'image',
+        src: 'resources/202503-油菜花/微信图片_20260307222626_76_1.jpg',
+        date: '2025 · 03',
+        title: '油菜花开',
+        quote: '富阳的油菜花田，你在黄色的油菜花里格外美丽。春天和你，都是我最爱的季节。',
+        label: '2025·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202503-油菜花/微信图片_20260307224119_93_1.jpg',
+        date: '2025 · 03',
+        title: '春日漫步',
+        quote: '春天的阳光，油菜花的金黄，还有你灿烂的笑容。',
+        label: '2025·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202503-油菜花/微信图片_20260307224120_94_1.jpg',
+        date: '2025 · 03',
+        title: '花海浪漫',
+        quote: '走在花海中，你就是最美的那朵花。',
+        label: '2025·03'
+      },
+      {
+        type: 'image',
+        src: 'resources/202503-油菜花/微信图片_20260307224121_95_1.jpg',
+        date: '2025 · 03',
+        title: '春日美好',
+        quote: '和你在一起的春天，每一天都值得珍藏。',
+        label: '2025·03'
+      },
+      // 2025·05 香港澳门 (2张)
+      {
+        type: 'image',
+        src: 'resources/202505-香港澳门/微信图片_20260307224233_98_1.jpg',
+        date: '2025 · 05',
+        title: '香港澳门',
+        quote: '霓虹闪烁的维多利亚港，浪漫的澳门街头，和你一起看遍繁华。',
+        label: '2025·05'
+      },
+      {
+        type: 'image',
+        src: 'resources/202505-香港澳门/微信图片_20260307224234_99_1.jpg',
+        date: '2025 · 05',
+        title: '港澳之旅',
+        quote: '东方之珠，中西交汇，和你一起的每一段旅程都是回忆。',
+        label: '2025·05'
+      },
+      // 2025·10 马来西亚 (3张)
+      {
+        type: 'image',
+        src: 'resources/202510-马来西亚/微信图片_20260307222628_78_1.jpg',
+        date: '2025 · 10',
+        title: '马来西亚之旅',
+        quote: '仙本那的果冻海，吉隆坡的繁华，亚庇的日落。海岛景色超级美丽，和你一起的每一天都是蜜月。',
+        label: '2025·10'
+      },
+      {
+        type: 'image',
+        src: 'resources/202510-马来西亚/微信图片_20260307222637_83_1.jpg',
+        date: '2025 · 10',
+        title: '仙本那',
+        quote: '玻璃一样透明的海水，海里的鱼儿就在脚下。',
+        label: '2025·10'
+      },
+      {
+        type: 'image',
+        src: 'resources/202510-马来西亚/微信图片_20260307222637_84_1.jpg',
+        date: '2025 · 10',
+        title: '亚庇日落',
+        quote: '世界最美日落，和你一起看，才是最美的。',
+        label: '2025·10'
+      },
+      // 2025·11 苏州 (3张)
+      {
+        type: 'image',
+        src: 'resources/202511-苏州/微信图片_20260307225025_100_1.jpg',
+        date: '2025 · 11',
+        title: '苏州之旅',
+        quote: '苏州园林很配我老婆。古典的美，和你温柔的气质，是这世间最和谐的搭配。',
+        label: '2025·11'
+      },
+      {
+        type: 'image',
+        src: 'resources/202511-苏州/微信图片_20260307225026_101_1.jpg',
+        date: '2025 · 11',
+        title: '园林漫步',
+        quote: '在苏州园林里，你就是一道最美的风景。',
+        label: '2025·11'
+      },
+      {
+        type: 'image',
+        src: 'resources/202511-苏州/微信图片_20260307225026_102_1.jpg',
+        date: '2025 · 11',
+        title: '姑苏印象',
+        quote: '小桥流水，粉墙黛瓦，和你一起的苏州格外美丽。',
+        label: '2025·11'
+      },
+      // 信页面
+      {
+        type: 'letter',
+        label: '给你的信'
+      },
+      // 终章页面
+      {
+        type: 'final',
+        label: '余生'
+      }
+    ];
+
+    // ===== URL编码函数（处理中文字符） =====
+    function encodeUrl(url) {
+      try {
+        var parts = url.split('/');
+        var encodedParts = parts.map(function(part, index) {
+          if (index === 0 || part === '') return part;
+          return encodeURIComponent(part);
+        });
+        return encodedParts.join('/');
+      } catch (e) {
+        return url;
+      }
+    }
+
+    // ===== 初始化 =====
+    var sliderContainer = document.getElementById('sliderContainer');
+    var pageIndicators = document.getElementById('pageIndicators');
+    var slideProgressEl = document.getElementById('slideProgress');
+    var prevPageBtn = document.getElementById('prevPage');
+    var nextPageBtn = document.getElementById('nextPage');
+    var playPauseBtn = document.getElementById('playPause');
+
+    var currentPage = 0;
+    var totalPages = slidesData.length;
+    var isAnimating = false;
+    var autoPlay = true;
+    var progressValue = 0;
+    var slideDuration = 6000;
+    var animationFrame;
+    var videoElements = [];
+
+    // 设置容器宽度
+    sliderContainer.style.width = (totalPages * 100) + 'vw';
+
+    // 创建幻灯片
+    slidesData.forEach(function(slide, index) {
+      var slideEl = document.createElement('div');
+      slideEl.className = 'slide';
+      slideEl.id = 'slide_' + index;
+
+      if (slide.type === 'hero') {
+        slideEl.classList.add('slide-hero');
+        slideEl.innerHTML = '<p class="hero-date">2026 · 03 · 18 &nbsp;·&nbsp; 结婚纪念日</p>' +
+          '<h1 class="hero-title">因为遇见你，<br /><em>每一天都值得珍藏</em></h1>' +
+          '<p class="hero-subtitle">写给我最爱的人</p>' +
+          '<div class="day-counter">' +
+          '<div class="day-number" id="dayCount">——</div>' +
+          '<div class="day-label">我们相识的第 <span id="dayWord"></span> 天</div>' +
+          '</div>';
+      } else if (slide.type === 'image') {
+        slideEl.classList.add('slide-media');
+        var encodedSrc = encodeUrl(slide.src);
+        slideEl.innerHTML = '<div class="media-bg" style="background-image: url(\'' + encodedSrc + '\')"></div>' +
+          '<div class="media-content">' +
+          '<img class="media-image" src="' + encodedSrc + '" alt="' + slide.title + '" loading="lazy" />' +
+          '<div class="media-text">' +
+          '<div class="media-date">' + slide.date + '</div>' +
+          '<h2 class="media-title">' + slide.title + '</h2>' +
+          '<p class="media-quote">"' + slide.quote + '"</p>' +
+          '</div></div>';
+      } else if (slide.type === 'video') {
+        slideEl.classList.add('slide-media');
+        var encodedSrc = encodeUrl(slide.src);
+        var encodedPoster = slide.poster ? encodeUrl(slide.poster) : '';
+        var posterAttr = slide.poster ? ' poster="' + encodedPoster + '"' : '';
+        slideEl.innerHTML = '<div class="media-content" style="width:100%;max-width:75%;">' +
+          '<video class="media-video" id="video_' + index + '" ' + posterAttr + ' controls loop playsinline>' +
+          '<source src="' + encodedSrc + '" type="video/mp4">' +
+          '您的浏览器不支持视频播放。' +
+          '</video>' +
+          '<div class="media-text">' +
+          '<div class="media-date">' + slide.date + '</div>' +
+          '<h2 class="media-title">' + slide.title + '</h2>' +
+          '<p class="media-quote">"' + slide.quote + '"</p>' +
+          '</div></div>';
+        videoElements.push({ index: index });
+      } else if (slide.type === 'pdf') {
+        slideEl.classList.add('slide-media');
+        var encodedSrc = encodeUrl(slide.src);
+        slideEl.innerHTML = '<div class="media-content" style="width:100%;max-width:95%;">' +
+          '<div class="pdf-container">' +
+          '<embed src="' + encodedSrc + '#toolbar=0&navpanes=0&scrollbar=0&zoom=100" type="application/pdf" width="100%" height="100%" />' +
+          '</div>' +
+          '<div class="media-text" style="margin-top:1rem;">' +
+          '<div class="media-date">' + slide.date + '</div>' +
+          '<h2 class="media-title">' + slide.title + '</h2>' +
+          '<p class="media-quote">"' + slide.quote + '"</p>' +
+          '</div></div>';
+      } else if (slide.type === 'letter') {
+        slideEl.classList.add('slide-letter');
+        slideEl.innerHTML = '<div class="letter-card">' +
+          '<div class="letter-header">' +
+          '<p class="letter-date">2026 · 03 · 18</p>' +
+          '<p class="letter-greeting">亲爱的，</p>' +
+          '</div>' +
+          '<div class="letter-body">' +
+          '还记得我们第一次见面的样子吗？\n' +
+          '那时阳光正好，你微笑着向我走来。\n\n' +
+          '我们一起走过了这么多地方：\n' +
+          '千岛湖的湖光山色，云南的洱海骑行，\n' +
+          '桂林的漓江泛舟，马来西亚的海岛漫步……\n\n' +
+          '每一次旅行，每一个瞬间，\n' +
+          '我都想永远珍藏。\n\n' +
+          '你说愿意的那一天，\n' +
+          '是我这辈子最幸福的时刻。\n' +
+          '你眼里的泪光，比任何风景都美。\n\n' +
+          '现在，我们在一起已经这么久了。\n' +
+          '未来的路还很长，\n' +
+          '但我很确定，只要和你在一起，\n' +
+          '哪里都是最好的风景。\n\n' +
+          '谢谢你选择了我，\n' +
+          '谢谢你成为我生命中最重要的人。\n\n' +
+          '愿我们的余生，\n' +
+          '一直这样甜蜜地走下去。' +
+          '</div>' +
+          '<p class="letter-sign">— 爱你的人，2026 年 3 月 18 日</p>' +
+          '</div>';
+      } else if (slide.type === 'final') {
+        slideEl.classList.add('slide-final');
+        slideEl.innerHTML = '<div class="final-ornament">✦</div>' +
+          '<h2 class="final-title">余生请多指教</h2>' +
+          '<p class="final-subtitle">To one who makes my heart smile</p>' +
+          '<div class="final-content">' +
+          '<p>从2019年的初春到如今，两千多个日夜，我们一起走过了四季轮回。</p>' +
+          '<p>那些平凡的日子，因为有你而变得闪闪发光。每一个清晨的问候，每一个深夜的陪伴，每一次旅途中的欢笑，都是我生命中最珍贵的宝藏。</p>' +
+          '<p><em>你说，遇见我是你这辈子最幸运的事。</em></p>' +
+          '<p><em>我要说，我才是那个被幸运眷顾的人。</em></p>' +
+          '<p>爱情最美好的样子，不是轰轰烈烈的誓言，而是细水长流的陪伴。是一起做饭时的烟火气，是一起看电影时的默契，是吵架后一个拥抱就能化解的温柔。</p>' +
+          '<p>谢谢你，把最美好的青春给了我。</p>' +
+          '<p>未来的路还很长，但我知道，无论风雨，无论风景，只要牵着手，我们就无所畏惧。</p>' +
+          '</div>' +
+          '<div class="final-heart">❤</div>' +
+          '<p class="final-footer">Forever & Always · 2019 — ∞</p>';
+      }
+
+      sliderContainer.appendChild(slideEl);
+    });
+
+    // 创建指示器（带分组标签）
+    var lastGroup = '';
+    slidesData.forEach(function(slide, index) {
+      var group = slide.type === 'hero' ? '开始' :
+                  slide.type === 'letter' ? '书信' :
+                  slide.type === 'final' ? '终章' : '回忆';
+
+      if (group !== lastGroup && slide.label) {
+        var groupLabel = document.createElement('div');
+        groupLabel.className = 'indicator-group-label';
+        groupLabel.textContent = group;
+        pageIndicators.appendChild(groupLabel);
+        lastGroup = group;
+      }
+
+      var dot = document.createElement('div');
+      dot.className = 'indicator-dot' + (index === 0 ? ' active' : '');
+      dot.dataset.page = index;
+
+      if (slide.label) {
+        var label = document.createElement('span');
+        label.className = 'indicator-label';
+        label.textContent = slide.label;
+        dot.appendChild(label);
+      }
+
+      (function(idx) {
+        dot.addEventListener('click', function() {
+          goToPage(idx);
+        });
+      })(index);
+
+      pageIndicators.appendChild(dot);
+    });
+
+    var indicatorDots = pageIndicators.querySelectorAll('.indicator-dot');
+
+    // ===== 轮播函数 =====
+    function goToPage(page) {
+      if (isAnimating || page === currentPage) return;
+
+      isAnimating = true;
+      currentPage = page;
+
+      // 暂停所有视频
+      pauseAllVideos();
+
+      // 更新容器位置
+      sliderContainer.style.transform = 'translateX(-' + (currentPage * 100) + 'vw)';
+
+      // 更新指示器
+      for (var i = 0; i < indicatorDots.length; i++) {
+        indicatorDots[i].classList.toggle('active', i === currentPage);
+      }
+
+      // 更新按钮状态
+      prevPageBtn.disabled = currentPage === 0;
+      nextPageBtn.disabled = currentPage === totalPages - 1;
+
+      // 重置进度
+      progressValue = 0;
+
+      setTimeout(function() {
+        isAnimating = false;
+      }, 800);
+    }
+
+    function pauseAllVideos() {
+      for (var i = 0; i < videoElements.length; i++) {
+        var vid = document.getElementById('video_' + videoElements[i].index);
+        if (vid) {
+          vid.pause();
+        }
+      }
+    }
+
+    // ===== 导航事件 =====
+    prevPageBtn.addEventListener('click', function() {
+      if (currentPage > 0) goToPage(currentPage - 1);
+    });
+
+    nextPageBtn.addEventListener('click', function() {
+      if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+    });
+
+    // 鼠标滚轮控制
+    var wheelTimeout;
+    document.addEventListener('wheel', function(e) {
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(function() {
+        if (e.deltaY > 0 && currentPage < totalPages - 1) {
+          goToPage(currentPage + 1);
+        } else if (e.deltaY < 0 && currentPage > 0) {
+          goToPage(currentPage - 1);
+        }
+      }, 50);
+    }, { passive: true });
+
+    // 键盘控制
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentPage < totalPages - 1) goToPage(currentPage + 1);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentPage > 0) goToPage(currentPage - 1);
+      }
+    });
+
+    // 触摸滑动支持
+    var touchStartX = 0;
+    var touchEndX = 0;
+
+    document.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchend', function(e) {
+      touchEndX = e.changedTouches[0].clientX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      var diff = touchStartX - touchEndX;
+      if (diff > 50 && currentPage < totalPages - 1) {
+        goToPage(currentPage + 1);
+      } else if (diff < -50 && currentPage > 0) {
+        goToPage(currentPage - 1);
+      }
+    }
+
+    // ===== 自动播放动画 =====
+    function animateProgress() {
+      if (autoPlay) {
+        // 检查是否有视频正在播放
+        var videoPlaying = false;
+        for (var i = 0; i < videoElements.length; i++) {
+          var vid = document.getElementById('video_' + videoElements[i].index);
+          if (vid && !vid.paused) {
+            videoPlaying = true;
+            break;
+          }
+        }
+
+        if (!videoPlaying) {
+          progressValue += 16;
+
+          // 根据页面类型设置不同时长
+          var currentSlideType = slidesData[currentPage] ? slidesData[currentPage].type : '';
+          var currentDuration = slideDuration;
+          if (currentSlideType === 'letter' || currentSlideType === 'final') {
+            currentDuration = 60000; // 最后两页60秒
+          }
+
+          var progressPercent = (progressValue / currentDuration) * 100;
+          slideProgressEl.style.width = progressPercent + '%';
+
+          if (progressValue >= currentDuration) {
+            if (currentPage < totalPages - 1) {
+              goToPage(currentPage + 1);
+            } else {
+              progressValue = 0;
+            }
+          }
+        }
+      }
+      animationFrame = requestAnimationFrame(animateProgress);
+    }
+
+    // 播放暂停按钮
+    playPauseBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      autoPlay = !autoPlay;
+      playPauseBtn.textContent = autoPlay ? '⏸' : '▶';
+      slideProgressEl.style.opacity = autoPlay ? '1' : '0.3';
+    });
+
+    // 初始化
+    prevPageBtn.disabled = true;
+
+    // 天数计算
+    (function() {
+      var start = new Date('2019-02-24');
+      var now = new Date();
+      var days = Math.floor((now - start) / 86400000);
+      var dayCountEl = document.getElementById('dayCount');
+      var dayWordEl = document.getElementById('dayWord');
+      if (dayCountEl) dayCountEl.textContent = days.toLocaleString('zh-CN');
+      if (dayWordEl) dayWordEl.textContent = days.toLocaleString('zh-CN');
+    })();
+
+    // ===== 背景音乐控制 =====
+    var bgMusic = document.getElementById('bgMusic');
+    var musicControl = document.getElementById('musicControl');
+    var musicIcon = document.getElementById('musicIcon');
+    var musicPlaying = false;
+
+    // 自动播放音乐
+    function playMusic() {
+      if (bgMusic) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().then(function() {
+          musicPlaying = true;
+          musicControl.classList.add('playing');
+          musicIcon.textContent = '🔊';
+          console.log('音乐播放成功');
+        }).catch(function(err) {
+          console.log('音乐播放失败:', err);
+          console.log('音乐文件:', bgMusic.src);
+          // 自动播放失败，等待用户点击
+          musicPlaying = false;
+          musicControl.classList.remove('playing');
+          musicIcon.textContent = '🎵';
+        });
+      }
+    }
+
+    // 点击按钮切换音乐
+    musicControl.addEventListener('click', function() {
+      if (bgMusic && !musicPlaying) {
+        bgMusic.play().then(function() {
+          musicPlaying = true;
+          musicControl.classList.add('playing');
+          musicIcon.textContent = '🔊';
+          console.log('音乐播放成功');
+        }).catch(function(err) {
+          console.log('音乐播放失败:', err);
+        });
+      } else if (bgMusic && musicPlaying) {
+        bgMusic.pause();
+        musicPlaying = false;
+        musicControl.classList.remove('playing');
+        musicIcon.textContent = '🎵';
+        console.log('音乐已暂停');
+      }
+    });
+
+    // 页面加载完成后自动播放音乐
+    window.addEventListener('load', function() {
+      setTimeout(playMusic, 1000);
+    });
+
+    // 开始自动播放
+    animateProgress();
+  </script>
+</body>
+</html>
