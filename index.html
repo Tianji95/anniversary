@@ -1207,7 +1207,7 @@
     var isAnimating = false;
     var autoPlay = true;
     var progressValue = 0;
-    var slideDuration = 6000;
+    var slideDuration = 12000;
     var animationFrame;
     var videoElements = [];
 
@@ -1259,10 +1259,26 @@
       } else if (slide.type === 'pdf') {
         slideEl.classList.add('slide-media');
         var encodedSrc = encodeUrl(slide.src);
+        // 获取完整URL用于Google Docs Viewer
+        var fullUrl = window.location.origin + window.location.pathname.replace('index.html', '') + slide.src;
+        var googleViewerUrl = 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(fullUrl);
+        // 检测是否为移动设备
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        var pdfHtml = '';
+        if (isMobile) {
+          // 移动端使用iframe + 下载按钮
+          pdfHtml = '<div class="pdf-container" style="position:relative;">' +
+            '<iframe src="' + googleViewerUrl + '" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>' +
+            '<a href="' + encodedSrc + '" download class="pdf-download-btn" style="position:absolute;bottom:10px;right:10px;background:var(--rose);color:white;padding:8px 16px;border-radius:20px;text-decoration:none;font-size:0.9rem;box-shadow:0 2px 8px rgba(0,0,0,0.2);">📥 下载PDF</a>' +
+            '</div>';
+        } else {
+          // 桌面端使用embed
+          pdfHtml = '<div class="pdf-container">' +
+            '<embed src="' + encodedSrc + '#toolbar=0&navpanes=0&scrollbar=0&zoom=100" type="application/pdf" width="100%" height="100%" />' +
+            '</div>';
+        }
         slideEl.innerHTML = '<div class="media-content" style="width:100%;max-width:95%;">' +
-          '<div class="pdf-container">' +
-          '<embed src="' + encodedSrc + '#toolbar=0&navpanes=0&scrollbar=0&zoom=100" type="application/pdf" width="100%" height="100%" />' +
-          '</div>' +
+          pdfHtml +
           '<div class="media-text" style="margin-top:1rem;">' +
           '<div class="media-date">' + slide.date + '</div>' +
           '<h2 class="media-title">' + slide.title + '</h2>' +
@@ -1470,7 +1486,7 @@
           var currentSlideType = slidesData[currentPage] ? slidesData[currentPage].type : '';
           var currentDuration = slideDuration;
           if (currentSlideType === 'letter' || currentSlideType === 'final') {
-            currentDuration = 60000; // 最后两页60秒
+            currentDuration = 120000; // 最后两页120秒
           }
 
           var progressPercent = (progressValue / currentDuration) * 100;
@@ -1515,6 +1531,7 @@
     var musicControl = document.getElementById('musicControl');
     var musicIcon = document.getElementById('musicIcon');
     var musicPlaying = false;
+    var musicWasPlayingBeforeVideo = false; // 记录视频播放前音乐的状态
 
     // 自动播放音乐
     function playMusic() {
@@ -1536,6 +1553,16 @@
       }
     }
 
+    // 确保音乐循环播放（双重保障）
+    bgMusic.addEventListener('ended', function() {
+      if (musicPlaying || musicWasPlayingBeforeVideo) {
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(function(err) {
+          console.log('循环播放失败:', err);
+        });
+      }
+    });
+
     // 点击按钮切换音乐
     musicControl.addEventListener('click', function() {
       if (bgMusic && !musicPlaying) {
@@ -1556,9 +1583,49 @@
       }
     });
 
+    // 监听所有视频的播放和结束事件
+    function setupVideoListeners() {
+      var videos = document.querySelectorAll('video');
+      videos.forEach(function(video) {
+        // 视频开始播放时，记录音乐状态并降低音量
+        video.addEventListener('play', function() {
+          if (musicPlaying) {
+            musicWasPlayingBeforeVideo = true;
+            bgMusic.volume = 0.05; // 降低背景音乐音量，不完全停止
+          }
+        });
+
+        // 视频暂停时，恢复音乐
+        video.addEventListener('pause', function() {
+          if (musicWasPlayingBeforeVideo) {
+            bgMusic.volume = 0.3;
+            if (bgMusic.paused) {
+              bgMusic.play().catch(function(err) {
+                console.log('恢复音乐失败:', err);
+              });
+            }
+          }
+        });
+
+        // 视频结束时，恢复音乐
+        video.addEventListener('ended', function() {
+          if (musicWasPlayingBeforeVideo) {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(function(err) {
+              console.log('恢复音乐失败:', err);
+            });
+            musicWasPlayingBeforeVideo = false;
+          }
+        });
+      });
+    }
+
     // 页面加载完成后自动播放音乐
     window.addEventListener('load', function() {
-      setTimeout(playMusic, 1000);
+      setTimeout(function() {
+        playMusic();
+        setupVideoListeners();
+      }, 1000);
     });
 
     // 开始自动播放
