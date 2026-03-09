@@ -704,7 +704,7 @@
 
   <!-- 背景音乐 -->
   <audio id="bgMusic" loop>
-    <source src="resources/music.mp3" type="audio/mpeg">
+    <source src="https://cdn.jsdelivr.net/gh/Tianji95/anniversary@main/resources/music.mp3" type="audio/mpeg">
     您的浏览器不支持音频播放。
   </audio>
 
@@ -1273,17 +1273,24 @@
       }
     ];
 
-    // ===== URL编码函数（处理中文字符） =====
+    // ===== CDN配置（jsDelivr加速国内访问） =====
+    var CDN_BASE = 'https://cdn.jsdelivr.net/gh/Tianji95/anniversary@main/';
+
+    // ===== URL编码函数（处理中文字符 + CDN加速） =====
     function encodeUrl(url) {
+      // 如果已经是完整URL，直接返回
+      if (url.startsWith('http')) return url;
+
       try {
         var parts = url.split('/');
         var encodedParts = parts.map(function(part, index) {
           if (index === 0 || part === '') return part;
           return encodeURIComponent(part);
         });
-        return encodedParts.join('/');
+        // 使用jsDelivr CDN加速
+        return CDN_BASE + encodedParts.join('/');
       } catch (e) {
-        return url;
+        return CDN_BASE + url;
       }
     }
 
