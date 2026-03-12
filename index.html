@@ -655,13 +655,16 @@
       color: var(--text-soft);
       white-space: nowrap;
       text-align: center;
+      margin-top: 0.3rem;
+      line-height: 1.2;
     }
 
     .timeline-date {
       font-size: 0.65rem;
       color: var(--rose);
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
       font-weight: 300;
+      line-height: 1;
     }
 
     /* ===== 光效增强 ===== */
@@ -849,27 +852,44 @@
     /* ===== 响应式 ===== */
     @media (max-width: 768px) {
       .page-indicators {
-        right: 15px;
+        right: 8px;
+        max-height: 70vh;
       }
-      .media-image, .media-video { max-width: 90%; max-height: 65vh; }
-      .media-video { max-height: 50vh; background: #000; }
+      .indicator-dot {
+        width: 10px;
+        height: 10px;
+      }
+      .media-image, .media-video { max-width: 90%; max-height: 55vh; }
+      .media-video { max-height: 45vh; background: #000; }
       .pdf-container { width: 64vw; height: 75vh; max-height: 600px; -webkit-overflow-scrolling: touch; min-height: 400px; }
       .pdf-container embed { display: block; width: 100%; height: 100%; object-fit: contain; }
       .longimage-container { height: 65vh; max-height: 500px; }
       .media-bg { }
       .media-title { font-size: 1.5rem; }
       .media-quote { font-size: 0.9rem; }
-      .media-text { padding: 0.8rem 1rem; min-height: 80px; }
+      .media-text { padding: 0.8rem 1rem; min-height: 80px; margin-bottom: 80px; }
       .media-date, .media-title, .media-quote { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
-      .media-content { padding: 1rem; max-width: 95%; }
+      .media-content { padding: 1rem; max-width: 95%; padding-bottom: 90px; }
       .letter-card { padding: 2.5rem 1.8rem; max-width: 95%; overflow-y: auto; max-height: 90vh; }
       .letter-card::before { display: none; }
-      .nav-arrows { bottom: 20px; padding: 0.6rem 1.5rem; }
-      .nav-arrow, .play-pause-btn { width: 38px; height: 38px; }
-      .nav-arrow { width: 40px; height: 40px; font-size: 1rem; }
+      .nav-arrows { bottom: 15px; padding: 0.5rem 1.2rem; z-index: 1001; }
+      .nav-arrow, .play-pause-btn { width: 36px; height: 36px; }
+      .nav-arrow { width: 36px; height: 36px; font-size: 1rem; }
       .final-title { font-size: 1.8rem; }
       .final-subtitle { font-size: 1.2rem; }
       .final-content { font-size: 1rem; }
+      
+      /* 时间轴手机端优化 */
+      .hero-timeline {
+        width: 90%;
+        margin-top: 2rem;
+      }
+      .timeline-label {
+        font-size: 0.6rem;
+      }
+      .timeline-date {
+        font-size: 0.55rem;
+      }
     }
 
     /* 音乐控制按钮 */
