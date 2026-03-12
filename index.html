@@ -582,6 +582,239 @@
       animation: fadeUp 1s ease 1.2s forwards;
     }
 
+    /* ===== 时间线动画 ===== */
+    .hero-timeline {
+      width: 80%;
+      max-width: 800px;
+      margin-top: 3rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      transform: translateY(-50%);
+      animation: lineGrow 3s ease 2s forwards;
+    }
+
+    @keyframes lineGrow {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .timeline-nodes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--rose);
+      box-shadow: 0 0 0 3px var(--cream), 0 0 10px rgba(201, 132, 106, 0.5);
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .timeline-dot::after {
+      content: '💕';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-node.active .timeline-dot::after {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+    }
+
+    .timeline-label {
+      font-size: 0.7rem;
+      color: var(--text-soft);
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .timeline-date {
+      font-size: 0.65rem;
+      color: var(--rose);
+      margin-top: 0.2rem;
+      font-weight: 300;
+    }
+
+    /* ===== 光效增强 ===== */
+    .glow-text {
+      text-shadow: 
+        0 0 10px rgba(201, 132, 106, 0.3),
+        0 0 20px rgba(201, 132, 106, 0.2),
+        0 0 30px rgba(201, 132, 106, 0.1);
+    }
+
+    .glow-image {
+      position: relative;
+    }
+
+    .glow-image::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 20px;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(201, 132, 106, 0.2) 0%,
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .glow-image:hover::after {
+      opacity: 1;
+    }
+
+    /* ===== 打字机效果 ===== */
+    .typewriter {
+      overflow: hidden;
+      border-right: 2px solid var(--rose);
+      white-space: nowrap;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--rose); }
+    }
+
+    .typewriter-text {
+      display: inline;
+    }
+
+    /* ===== 章节过渡页 ===== */
+    .slide-chapter {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--ivory) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chapter-bg-circle {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201, 132, 106, 0.1) 0%, transparent 70%);
+      animation: chapterPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes chapterPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .chapter-content {
+      text-align: center;
+      z-index: 1;
+      animation: chapterFadeIn 1s ease;
+    }
+
+    @keyframes chapterFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chapter-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      animation: chapterIconBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes chapterIconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .chapter-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      color: var(--text);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .chapter-subtitle {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1rem;
+      color: var(--text-soft);
+      letter-spacing: 0.2em;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+
+    .chapter-years {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.9rem;
+      color: var(--rose);
+      margin-top: 1rem;
+      letter-spacing: 0.3em;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+    }
+
+    /* ===== 3D过渡效果 ===== */
+    .slide-3d-flip {
+      perspective: 1000px;
+    }
+
+    .slide-3d-flip .slide {
+      transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transform-style: preserve-3d;
+    }
+
+    /* ===== 视差效果 ===== */
+    .parallax-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .parallax-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.3s ease-out;
+    }
+
     /* ===== 动画 ===== */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(30px); }
@@ -596,6 +829,21 @@
     @keyframes letterFadeIn {
       from { opacity: 0; transform: translateY(20px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes slideInFromLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInFromRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     /* ===== 响应式 ===== */
@@ -731,6 +979,109 @@
       .start-overlay .heart-icon { font-size: 3rem; }
       .start-overlay .start-title { font-size: 1.5rem; }
       .start-overlay .start-btn { padding: 12px 32px; font-size: 1rem; }
+      .personalized-intro .intro-title { font-size: 2rem; }
+      .personalized-intro .intro-subtitle { font-size: 0.9rem; }
+      .personalized-intro .intro-hearts-top,
+      .personalized-intro .intro-hearts-bottom { font-size: 1rem; }
+    }
+
+    /* ===== 个性化开场动画 ===== */
+    .personalized-intro {
+      animation: fadeIn 1s ease;
+    }
+
+    .personalized-intro .intro-content {
+      text-align: center;
+      animation: scaleIn 0.8s ease-out;
+    }
+
+    .personalized-intro .intro-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      animation: slideUp 0.8s ease-out 0.3s both;
+    }
+
+    .personalized-intro .intro-subtitle {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.2rem;
+      color: var(--text-soft);
+      letter-spacing: 0.3em;
+      animation: slideUp 0.8s ease-out 0.6s both;
+    }
+
+    .personalized-intro .intro-hearts-top,
+    .personalized-intro .intro-hearts-bottom {
+      font-size: 1.5rem;
+      line-height: 2;
+      animation: fadeIn 0.5s ease-out 0.9s both;
+      opacity: 0.6;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
   </style>
 </head>
@@ -791,6 +1142,14 @@
         type: 'hero',
         label: '首页'
       },
+      // 章节过渡页：相知
+      {
+        type: 'chapter',
+        icon: '💫',
+        title: '相知',
+        subtitle: '2019 · 一切美好的开始',
+        label: '相知'
+      },
       // 2019·02 梦开始的地方 (4张)
       {
         type: 'image',
@@ -798,7 +1157,8 @@
         date: '2019 · 02',
         title: '梦开始的地方',
         quote: '第一次看到你的照片，我想：这个女生超好看，如果能是我女朋友就好了。我不知道，那一眼会是余生的开始。',
-        label: '2019·02'
+        label: '2019·02',
+        transition: 'slideInFromLeft'
       },
       {
         type: 'image',
@@ -951,6 +1311,14 @@
         quote: '南京的春天，有你相伴，格外美丽。',
         label: '2021·03'
       },
+      // 章节过渡页：相恋
+      {
+        type: 'chapter',
+        icon: '💕',
+        title: '相恋',
+        subtitle: '2021 · 爱的誓言',
+        label: '相恋'
+      },
       // 2021·03 求婚 (6张照片+1个视频)
       {
         type: 'image',
@@ -958,7 +1326,8 @@
         date: '2021 · 03 · 14',
         title: '求婚 · 准备',
         quote: '紧张又期待，准备了好久的时刻，终于要来了。',
-        label: '2021·03'
+        label: '2021·03',
+        transition: 'zoomIn'
       },
       {
         type: 'image',
@@ -1372,12 +1741,21 @@
       if (slide.type === 'hero') {
         slideEl.classList.add('slide-hero');
         slideEl.innerHTML = '<p class="hero-date">2026 · 03 · 18 &nbsp;·&nbsp; 结婚纪念日</p>' +
-          '<h1 class="hero-title">因为遇见你，<br /><em>每一天都值得珍藏</em></h1>' +
-          '<p class="hero-subtitle">写给我最爱的人</p>' +
+          '<h1 class="hero-title glow-text">因为遇见你，<br /><em>每一天都值得珍藏</em></h1>' +
+          '<p class="hero-subtitle">写给我最爱的人 · 熊文靓</p>' +
           '<div class="day-counter">' +
           '<div class="day-number" id="dayCount">——</div>' +
           '<div class="day-label">我们相识的第 <span id="dayWord"></span> 天</div>' +
-          '</div>';
+          '</div>' +
+          '<div class="hero-timeline">' +
+          '<div class="timeline-line"></div>' +
+          '<div class="timeline-nodes">' +
+          '<div class="timeline-node" data-index="0"><div class="timeline-dot"></div><div class="timeline-label">相识</div><div class="timeline-date">2019.02</div></div>' +
+          '<div class="timeline-node" data-index="1"><div class="timeline-dot"></div><div class="timeline-label">订婚</div><div class="timeline-date">2020.10</div></div>' +
+          '<div class="timeline-node" data-index="2"><div class="timeline-dot"></div><div class="timeline-label">求婚</div><div class="timeline-date">2021.03</div></div>' +
+          '<div class="timeline-node" data-index="3"><div class="timeline-dot"></div><div class="timeline-label">领证</div><div class="timeline-date">2021.03</div></div>' +
+          '<div class="timeline-node" data-index="4"><div class="timeline-dot"></div><div class="timeline-label">婚礼</div><div class="timeline-date">2022.08</div></div>' +
+          '</div></div>';
       } else if (slide.type === 'image') {
         slideEl.classList.add('slide-media');
         var encodedSrc = encodeUrl(slide.src);
@@ -2098,6 +2476,416 @@
 
       console.log('🎉 惊喜系统已加载！点击照片试试看！');
     })();
+
+    // ===== 🌟 时间线动画系统 =====
+    (function() {
+      // 动态天数计数器
+      function animateDayCounter() {
+        var dayCountEl = document.getElementById('dayCount');
+        var dayWordEl = document.getElementById('dayWord');
+        
+        if (!dayCountEl || !dayWordEl) return;
+        
+        var startDate = new Date('2019-03-23'); // 你们相识的日期
+        var now = new Date();
+        var totalDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+        
+        var currentDay = 0;
+        var duration = 2000; // 动画持续2秒
+        var startTime = Date.now();
+        
+        function updateCounter() {
+          var elapsed = Date.now() - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          
+          // 使用缓动函数
+          var easeOutQuart = 1 - Math.pow(1 - progress, 4);
+          currentDay = Math.floor(totalDays * easeOutQuart);
+          
+          dayCountEl.textContent = currentDay.toLocaleString('zh-CN');
+          dayWordEl.textContent = currentDay.toLocaleString('zh-CN');
+          
+          if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+          }
+        }
+        
+        // 延迟启动，等待页面加载完成
+        setTimeout(updateCounter, 1500);
+      }
+
+      // 时间线节点动画
+      function animateTimelineNodes() {
+        var nodes = document.querySelectorAll('.timeline-node');
+        if (nodes.length === 0) return;
+        
+        nodes.forEach(function(node, index) {
+          setTimeout(function() {
+            node.style.opacity = '1';
+            node.style.transform = 'scale(1)';
+            node.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            
+            // 最后一个节点激活时触发特效
+            if (index === nodes.length - 1) {
+              setTimeout(function() {
+                node.classList.add('active');
+                if (window.SurpriseEffect) {
+                  window.SurpriseEffect.createExplosion(
+                    window.innerWidth / 2,
+                    window.innerHeight / 2,
+                    'heart',
+                    30
+                  );
+                }
+              }, 500);
+            }
+          }, 2500 + index * 300); // 从2.5秒开始，每个节点延迟300ms
+        });
+      }
+
+      // 启动时间线动画
+      animateDayCounter();
+      animateTimelineNodes();
+
+      console.log('🌟 时间线动画系统已加载！');
+    })();
+
+    // ===== ⌨️ 打字机效果系统 =====
+    (function() {
+      var typewriterQueue = [];
+      var isTyping = false;
+
+      function TypewriterEffect(element, text, speed, callback) {
+        this.element = element;
+        this.text = text;
+        this.speed = speed || 50;
+        this.callback = callback;
+        this.index = 0;
+        this.isHTML = false;
+      }
+
+      TypewriterEffect.prototype.type = function() {
+        var self = this;
+        
+        if (this.index < this.text.length) {
+          var char = this.text.charAt(this.index);
+          this.element.innerHTML += char;
+          this.index++;
+          
+          setTimeout(function() {
+            self.type();
+          }, this.speed);
+        } else {
+          isTyping = false;
+          if (this.callback) {
+            this.callback();
+          }
+          
+          // 处理队列中的下一个
+          if (typewriterQueue.length > 0) {
+            var next = typewriterQueue.shift();
+            next.start();
+          }
+        }
+      };
+
+      TypewriterEffect.prototype.start = function() {
+        this.element.innerHTML = '';
+        this.index = 0;
+        isTyping = true;
+        this.type();
+      };
+
+      // 应用打字机效果到指定元素
+      function applyTypewriter(selector, speed) {
+        var elements = document.querySelectorAll(selector);
+        elements.forEach(function(el) {
+          var originalText = el.innerHTML;
+          el.dataset.originalText = originalText;
+          el.innerHTML = '';
+          
+          // 当元素进入视口时触发
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                var typewriter = new TypewriterEffect(el, el.dataset.originalText, speed || 30);
+                
+                if (isTyping) {
+                  typewriterQueue.push(typewriter);
+                } else {
+                  typewriter.start();
+                }
+                
+                observer.unobserve(el);
+              }
+            });
+          }, { threshold: 0.5 });
+          
+          observer.observe(el);
+        });
+      }
+
+      // 导出API
+      window.TypewriterEffect = {
+        apply: applyTypewriter,
+        create: function(element, text, speed, callback) {
+          return new TypewriterEffect(element, text, speed, callback);
+        }
+      };
+
+      console.log('⌨️ 打字机效果系统已加载！');
+    })();
+
+    // ===== ✨ 光效增强系统 =====
+    (function() {
+      // 为图片添加光晕效果
+      function addImageGlow() {
+        var images = document.querySelectorAll('.media-image, .media-video');
+        images.forEach(function(img) {
+          img.classList.add('glow-image');
+        });
+      }
+
+      // 为文字添加光效
+      function addTextGlow() {
+        var titles = document.querySelectorAll('.media-title, .final-title, .chapter-title');
+        titles.forEach(function(title) {
+          title.classList.add('glow-text');
+        });
+      }
+
+      // 动态光效（鼠标跟随）
+      function createDynamicGlow() {
+        var glowLayer = document.createElement('div');
+        glowLayer.id = 'dynamicGlow';
+        glowLayer.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 9997;
+          opacity: 0.6;
+        `;
+        document.body.appendChild(glowLayer);
+
+        var canvas = document.createElement('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        glowLayer.appendChild(canvas);
+        
+        var ctx = canvas.getContext('2d');
+        var mouseX = window.innerWidth / 2;
+        var mouseY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', function(e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+
+        function drawGlow() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          var gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 200);
+          gradient.addColorStop(0, 'rgba(201, 132, 106, 0.15)');
+          gradient.addColorStop(0.5, 'rgba(201, 132, 106, 0.05)');
+          gradient.addColorStop(1, 'transparent');
+          
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          requestAnimationFrame(drawGlow);
+        }
+
+        drawGlow();
+      }
+
+      // 初始化光效
+      setTimeout(function() {
+        addImageGlow();
+        addTextGlow();
+        createDynamicGlow();
+      }, 1000);
+
+      console.log('✨ 光效增强系统已加载！');
+    })();
+
+    // ===== 🎭 3D过渡效果系统 =====
+    (function() {
+      var transitionEffects = {
+        zoom: function(slideEl) {
+          slideEl.style.animation = 'zoomIn 0.8s ease-out';
+        },
+        slideLeft: function(slideEl) {
+          slideEl.style.animation = 'slideInFromLeft 0.8s ease-out';
+        },
+        slideRight: function(slideEl) {
+          slideEl.style.animation = 'slideInFromRight 0.8s ease-out';
+        },
+        fade: function(slideEl) {
+          slideEl.style.animation = 'fadeUp 0.8s ease-out';
+        }
+      };
+
+      // 监听幻灯片切换
+      var originalGoToPage = window.goToPage;
+      if (originalGoToPage) {
+        window.goToPage = function(page) {
+          originalGoToPage(page);
+          
+          // 获取当前幻灯片
+          var currentSlide = document.getElementById('slide_' + page);
+          if (!currentSlide) return;
+          
+          // 根据幻灯片类型应用不同效果
+          var slideData = slidesData[page];
+          if (slideData && slideData.transition) {
+            var effect = transitionEffects[slideData.transition];
+            if (effect) {
+              effect(currentSlide.querySelector('.media-content'));
+            }
+          }
+        };
+      }
+
+      console.log('🎭 3D过渡效果系统已加载！');
+    })();
+
+    // ===== 🎵 音乐渐强效果 =====
+    (function() {
+      var bgMusic = document.getElementById('bgMusic');
+      var originalVolume = 0.3;
+      
+      function fadeIn(duration) {
+        if (!bgMusic) return;
+        
+        var targetVolume = originalVolume;
+        var steps = 20;
+        var volumeStep = targetVolume / steps;
+        var currentStep = 0;
+        
+        var interval = setInterval(function() {
+          currentStep++;
+          bgMusic.volume = volumeStep * currentStep;
+          
+          if (currentStep >= steps) {
+            clearInterval(interval);
+          }
+        }, duration / steps);
+      }
+
+      function fadeOut(duration) {
+        if (!bgMusic) return;
+        
+        var steps = 20;
+        var volumeStep = bgMusic.volume / steps;
+        var currentStep = 0;
+        
+        var interval = setInterval(function() {
+          currentStep++;
+          bgMusic.volume = Math.max(0, bgMusic.volume - volumeStep);
+          
+          if (currentStep >= steps) {
+            clearInterval(interval);
+          }
+        }, duration / steps);
+      }
+
+      // 在特定页面自动渐强音乐
+      var specialPages = ['求婚', '婚礼', '婚纱'];
+      
+      setInterval(function() {
+        var currentSlide = slidesData[currentPage];
+        if (currentSlide && currentSlide.title) {
+          var isSpecial = specialPages.some(function(keyword) {
+            return currentSlide.title.includes(keyword);
+          });
+          
+          if (isSpecial && bgMusic.volume < originalVolume) {
+            fadeIn(2000);
+          }
+        }
+      }, 5000);
+
+      console.log('🎵 音乐渐强效果已加载！');
+    })();
+
+    // ===== 🎬 开场动画 =====
+    (function() {
+      var startOverlay = document.getElementById('startOverlay');
+      if (!startOverlay) return;
+
+      // 个性化开场
+      function createPersonalizedIntro() {
+        var intro = document.createElement('div');
+        intro.className = 'personalized-intro';
+        intro.innerHTML = `
+          <div class="intro-content">
+            <div class="intro-hearts-top">${Array(15).fill('💕').join('')}</div>
+            <h1 class="intro-title">致 熊文靓</h1>
+            <p class="intro-subtitle">这是我们的故事</p>
+            <div class="intro-hearts-bottom">${Array(15).fill('❤️').join('')}</div>
+          </div>
+        `;
+        intro.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #fdf8f4 0%, #f5ede6 50%, #e8c5b8 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          animation: fadeIn 1s ease;
+        `;
+        
+        document.body.appendChild(intro);
+        
+        setTimeout(function() {
+          intro.style.animation = 'fadeOut 1s ease forwards';
+          setTimeout(function() {
+            intro.remove();
+          }, 1000);
+        }, 2500);
+      }
+
+      // 监听开始按钮
+      var startBtn = document.getElementById('startBtn');
+      if (startBtn) {
+        var originalHandler = startBtn.onclick;
+        startBtn.addEventListener('click', function() {
+          setTimeout(createPersonalizedIntro, 500);
+        });
+      }
+
+      console.log('🎬 开场动画系统已加载！');
+    })();
+
+    // ===== 💫 图片悬浮光效 =====
+    (function() {
+      function addHoverGlow() {
+        var images = document.querySelectorAll('.media-image');
+        images.forEach(function(img) {
+          img.addEventListener('mouseenter', function() {
+            this.style.filter = 'brightness(1.1)';
+            this.style.boxShadow = '0 0 40px rgba(201, 132, 106, 0.6), 0 20px 60px rgba(74, 55, 40, 0.2)';
+          });
+          
+          img.addEventListener('mouseleave', function() {
+            this.style.filter = 'brightness(1)';
+            this.style.boxShadow = '0 20px 60px rgba(74, 55, 40, 0.15)';
+          });
+        });
+      }
+
+      setTimeout(addHoverGlow, 1000);
+      console.log('💫 图片悬浮光效已加载！');
+    })();
+
+    console.log('🎉🎉🎉 所有增强功能已加载完成！享受你的纪念日吧！🎉🎉🎉');
   </script>
 </body>
 </html>
