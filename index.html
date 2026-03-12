@@ -462,6 +462,7 @@
       color: var(--text);
       white-space: pre-line;
       margin-bottom: 2.5rem;
+      min-height: 400px;
     }
 
     .letter-sign {
@@ -852,14 +853,21 @@
 
     /* ===== 响应式 ===== */
     @media (max-width: 768px) {
+      /* 首页特殊处理 */
+      .slide-hero .page-indicators {
+        max-height: 50vh;
+        padding: 8px 0;
+      }
+      
       .page-indicators {
-        right: 5px;
-        max-height: 60vh;
-        padding: 5px 0;
+        right: 3px;
+        max-height: 50vh;
+        padding: 8px 0;
       }
       .indicator-dot {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
+        margin: 3px 0;
       }
       .slide-progress {
         bottom: 70px;
@@ -887,8 +895,8 @@
       /* 时间轴手机端优化 */
       .hero-timeline {
         width: 90%;
-        margin-top: 2rem;
-        margin-bottom: 20px;
+        margin-top: 1.5rem;
+        margin-bottom: 80px;
       }
       .timeline-label {
         font-size: 0.6rem;
@@ -1280,14 +1288,6 @@
         title: '金陵印象',
         quote: '南京的春天，有你相伴，格外美丽。',
         label: '2021·03'
-      },
-      // 章节过渡页：相恋
-      {
-        type: 'chapter',
-        icon: '💕',
-        title: '相恋',
-        subtitle: '2021 · 爱的誓言',
-        label: '相恋'
       },
       // 2021·03 求婚 (6张照片+1个视频)
       {
@@ -2568,11 +2568,11 @@
       // 启用打字机效果
       setTimeout(function() {
         // 信件正文
-        applyTypewriter('.letter-body', 40);
+        applyTypewriter('.letter-body', 60);
         // 章节标题
-        applyTypewriter('.chapter-title', 60);
+        applyTypewriter('.chapter-title', 80);
         // 终章内容
-        applyTypewriter('.final-content p', 35);
+        applyTypewriter('.final-content p', 50);
       }, 2000);
 
       console.log('⌨️ 打字机效果系统已加载！');
