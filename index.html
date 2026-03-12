@@ -719,9 +719,31 @@
       animation: chapterPulse 3s ease-in-out infinite;
     }
 
+    .chapter-content {
+      text-align: center;
+      z-index: 1;
+      animation: chapterFadeIn 1s ease;
+    }
+
+    .chapter-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      animation: chapterIconBounce 2s ease-in-out infinite;
+    }
+
     @keyframes chapterPulse {
       0%, 100% { transform: scale(1); opacity: 0.5; }
       50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    @keyframes chapterFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes chapterIconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .chapter-content {
@@ -1704,6 +1726,14 @@
           '<div class="timeline-node" data-index="3"><div class="timeline-dot"></div><div class="timeline-label">领证</div><div class="timeline-date">2021.03</div></div>' +
           '<div class="timeline-node" data-index="4"><div class="timeline-dot"></div><div class="timeline-label">婚礼</div><div class="timeline-date">2022.08</div></div>' +
           '</div></div>';
+      } else if (slide.type === 'chapter') {
+        slideEl.classList.add('slide-chapter');
+        slideEl.innerHTML = '<div class="chapter-bg-circle"></div>' +
+          '<div class="chapter-content">' +
+          '<div class="chapter-icon">' + (slide.icon || '💫') + '</div>' +
+          '<h1 class="chapter-title">' + slide.title + '</h1>' +
+          '<p class="chapter-subtitle">' + slide.subtitle + '</p>' +
+          '</div>';
       } else if (slide.type === 'image') {
         slideEl.classList.add('slide-media');
         var encodedSrc = encodeUrl(slide.src);
@@ -2354,38 +2384,6 @@
         var slide = slidesData[page];
         if (!slide) return;
 
-        // 求婚页面 - 星星闪烁
-        if (slide.title && slide.title.includes('求婚')) {
-          setTimeout(function() {
-            for (var i = 0; i < 5; i++) {
-              setTimeout(function() {
-                createExplosion(
-                  Math.random() * canvas.width,
-                  Math.random() * canvas.height,
-                  'star',
-                  15
-                );
-              }, i * 300);
-            }
-          }, 500);
-        }
-
-        // 婚礼页面 - 花瓣飘落
-        if (slide.title && (slide.title.includes('婚礼') || slide.title.includes('婚纱'))) {
-          setTimeout(function() {
-            for (var i = 0; i < 3; i++) {
-              setTimeout(function() {
-                createExplosion(
-                  Math.random() * canvas.width,
-                  50,
-                  'petal',
-                  20
-                );
-              }, i * 200);
-            }
-          }, 500);
-        }
-
         // 终章页面 - 满屏花瓣+心形烟花
         if (slide.type === 'final') {
           setTimeout(function() {
@@ -2571,8 +2569,6 @@
       setTimeout(function() {
         // 信件正文
         applyTypewriter('.letter-body', 40);
-        // 图片引言
-        applyTypewriter('.media-quote', 30);
         // 章节标题
         applyTypewriter('.chapter-title', 60);
         // 终章内容
