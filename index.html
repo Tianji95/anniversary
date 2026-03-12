@@ -10,6 +10,49 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ===== 惊喜粒子效果 ===== */
+    .surprise-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* 彩蛋提示 */
+    .egg-hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(201, 132, 106, 0.9);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .egg-hint.show {
+      opacity: 1;
+    }
+
+    /* 图片点击提示 */
+    .media-image {
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .media-image:hover {
+      transform: scale(1.02);
+      box-shadow: 0 25px 70px rgba(74, 55, 40, 0.25);
+    }
+
     :root {
       --rose: #c9846a;
       --rose-light: #e8c5b8;
@@ -692,6 +735,12 @@
   </style>
 </head>
 <body>
+
+  <!-- 惊喜粒子画布 -->
+  <canvas id="surpriseCanvas" class="surprise-canvas"></canvas>
+
+  <!-- 彩蛋提示 -->
+  <div id="eggHint" class="egg-hint">💫 点击照片有惊喜哦！</div>
 
   <!-- 开始引导页 -->
   <div id="startOverlay" class="start-overlay">
@@ -1734,6 +1783,321 @@
 
     // 开始自动播放
     animateProgress();
+
+    // ===== 🎉 惊喜粒子系统 =====
+    (function() {
+      var canvas = document.getElementById('surpriseCanvas');
+      var ctx = canvas.getContext('2d');
+      var particles = [];
+      var animationId;
+
+      // 设置画布大小
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // 粒子基类
+      function Particle(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type || 'heart';
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = -Math.random() * 3 - 2;
+        this.gravity = 0.05;
+        this.life = 1;
+        this.decay = 0.005 + Math.random() * 0.01;
+        this.size = 10 + Math.random() * 15;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+        this.color = getRandomColor(type);
+      }
+
+      Particle.prototype.update = function() {
+        this.x += this.vx;
+        this.vy += this.gravity;
+        this.y += this.vy;
+        this.life -= this.decay;
+        this.rotation += this.rotationSpeed;
+        this.vx *= 0.99;
+      };
+
+      Particle.prototype.draw = function() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.fillStyle = this.color;
+
+        if (this.type === 'heart') {
+          drawHeart(ctx, 0, 0, this.size);
+        } else if (this.type === 'star') {
+          drawStar(ctx, 0, 0, this.size / 2);
+        } else if (this.type === 'petal') {
+          drawPetal(ctx, 0, 0, this.size);
+        } else if (this.type === 'sparkle') {
+          drawSparkle(ctx, 0, 0, this.size);
+        }
+
+        ctx.restore();
+      };
+
+      // 绘制爱心
+      function drawHeart(ctx, x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + size / 4);
+        ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + size / 4);
+        ctx.bezierCurveTo(x - size / 2, y + size / 2, x, y + size * 0.75, x, y + size);
+        ctx.bezierCurveTo(x, y + size * 0.75, x + size / 2, y + size / 2, x + size / 2, y + size / 4);
+        ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + size / 4);
+        ctx.fill();
+      }
+
+      // 绘制星星
+      function drawStar(ctx, x, y, radius) {
+        ctx.beginPath();
+        for (var i = 0; i < 5; i++) {
+          var angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+          var px = x + Math.cos(angle) * radius;
+          var py = y + Math.sin(angle) * radius;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // 绘制花瓣
+      function drawPetal(ctx, x, y, size) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, size / 2, size, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 绘制闪光
+      function drawSparkle(ctx, x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x - size, y);
+        ctx.lineTo(x + size, y);
+        ctx.moveTo(x, y - size);
+        ctx.lineTo(x, y + size);
+        ctx.moveTo(x - size * 0.7, y - size * 0.7);
+        ctx.lineTo(x + size * 0.7, y + size * 0.7);
+        ctx.moveTo(x + size * 0.7, y - size * 0.7);
+        ctx.lineTo(x - size * 0.7, y + size * 0.7);
+        ctx.strokeStyle = ctx.fillStyle;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // 随机颜色
+      function getRandomColor(type) {
+        var colors = {
+          heart: ['#e74c3c', '#ff6b6b', '#ee5a24', '#ff4757', '#ff6348', '#ff3838'],
+          star: ['#ffd700', '#ffed4a', '#fff9c4', '#fff59d', '#ffee58'],
+          petal: ['#ffb6c1', '#ffc0cb', '#ffb3ba', '#ffcad4', '#f8b4d9', '#e8b4d8'],
+          sparkle: ['#fff', '#ffd700', '#87ceeb', '#98fb98', '#dda0dd']
+        };
+        var arr = colors[type] || colors.heart;
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      // 创建粒子爆炸
+      function createExplosion(x, y, type, count) {
+        count = count || 20;
+        for (var i = 0; i < count; i++) {
+          var p = new Particle(x, y, type);
+          p.vx = (Math.random() - 0.5) * 8;
+          p.vy = -Math.random() * 6 - 2;
+          particles.push(p);
+        }
+      }
+
+      // 创建爱心雨
+      function createHeartRain() {
+        for (var i = 0; i < 30; i++) {
+          setTimeout(function() {
+            var p = new Particle(
+              Math.random() * canvas.width,
+              -20 - Math.random() * 100,
+              'heart'
+            );
+            p.vy = Math.random() * 2 + 1;
+            p.vx = (Math.random() - 0.5) * 2;
+            p.gravity = 0.02;
+            p.decay = 0.003;
+            particles.push(p);
+          }, i * 100);
+        }
+      }
+
+      // 创建满屏花瓣
+      function createPetalShower() {
+        for (var i = 0; i < 100; i++) {
+          setTimeout(function() {
+            var p = new Particle(
+              Math.random() * canvas.width,
+              -20,
+              'petal'
+            );
+            p.vy = Math.random() * 1 + 0.5;
+            p.vx = (Math.random() - 0.5) * 1;
+            p.gravity = 0.01;
+            p.decay = 0.002;
+            p.size = 8 + Math.random() * 12;
+            particles.push(p);
+          }, i * 50);
+        }
+      }
+
+      // 创建心形烟花
+      function createHeartFirework() {
+        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 2;
+        
+        // 创建心形轨迹的粒子
+        for (var i = 0; i < 60; i++) {
+          var t = (i / 60) * Math.PI * 2;
+          var heartX = 16 * Math.pow(Math.sin(t), 3);
+          var heartY = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+          
+          var p = new Particle(centerX, centerY, 'heart');
+          p.targetX = centerX + heartX * 10;
+          p.targetY = centerY + heartY * 10;
+          p.vx = (p.targetX - centerX) / 50;
+          p.vy = (p.targetY - centerY) / 50;
+          p.gravity = 0;
+          p.decay = 0.008;
+          p.size = 12;
+          particles.push(p);
+        }
+      }
+
+      // 动画循环
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+
+          if (particles[i].life <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+
+        animationId = requestAnimationFrame(animate);
+      }
+
+      // 开始动画
+      animate();
+
+      // ===== 点击照片触发惊喜 =====
+      var eggHint = document.getElementById('eggHint');
+      var hintShown = false;
+
+      // 显示彩蛋提示（首次浏览时）
+      setTimeout(function() {
+        if (!hintShown) {
+          eggHint.classList.add('show');
+          hintShown = true;
+          setTimeout(function() {
+            eggHint.classList.remove('show');
+          }, 3000);
+        }
+      }, 5000);
+
+      // 监听所有图片点击
+      document.addEventListener('click', function(e) {
+        var target = e.target;
+        
+        if (target.classList.contains('media-image')) {
+          // 随机触发不同效果
+          var rand = Math.random();
+          if (rand < 0.5) {
+            // 爱心爆炸
+            createExplosion(e.clientX, e.clientY, 'heart', 25);
+          } else if (rand < 0.8) {
+            // 星星爆炸
+            createExplosion(e.clientX, e.clientY, 'star', 20);
+            createExplosion(e.clientX, e.clientY, 'sparkle', 15);
+          } else {
+            // 超级爱心雨
+            createHeartRain();
+          }
+        }
+      });
+
+      // ===== 特定页面自动触发效果 =====
+      var currentPageEl = document.getElementById('slide_0');
+      
+      // 监听页面切换
+      var originalGoToPage = goToPage;
+      goToPage = function(page) {
+        originalGoToPage(page);
+        
+        // 获取当前幻灯片数据
+        var slide = slidesData[page];
+        if (!slide) return;
+
+        // 求婚页面 - 星星闪烁
+        if (slide.title && slide.title.includes('求婚')) {
+          setTimeout(function() {
+            for (var i = 0; i < 5; i++) {
+              setTimeout(function() {
+                createExplosion(
+                  Math.random() * canvas.width,
+                  Math.random() * canvas.height,
+                  'star',
+                  15
+                );
+              }, i * 300);
+            }
+          }, 500);
+        }
+
+        // 婚礼页面 - 花瓣飘落
+        if (slide.title && (slide.title.includes('婚礼') || slide.title.includes('婚纱'))) {
+          setTimeout(function() {
+            for (var i = 0; i < 3; i++) {
+              setTimeout(function() {
+                createExplosion(
+                  Math.random() * canvas.width,
+                  50,
+                  'petal',
+                  20
+                );
+              }, i * 200);
+            }
+          }, 500);
+        }
+
+        // 终章页面 - 满屏花瓣+心形烟花
+        if (slide.type === 'final') {
+          setTimeout(function() {
+            createPetalShower();
+          }, 800);
+          setTimeout(function() {
+            createHeartFirework();
+          }, 2000);
+          setTimeout(function() {
+            createExplosion(canvas.width / 2, canvas.height / 2, 'heart', 50);
+          }, 3500);
+        }
+      };
+
+      // 暴露API供外部调用
+      window.SurpriseEffect = {
+        createExplosion: createExplosion,
+        createHeartRain: createHeartRain,
+        createPetalShower: createPetalShower,
+        createHeartFirework: createHeartFirework
+      };
+
+      console.log('🎉 惊喜系统已加载！点击照片试试看！');
+    })();
   </script>
 </body>
 </html>
