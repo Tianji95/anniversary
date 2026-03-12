@@ -985,51 +985,6 @@
       .personalized-intro .intro-hearts-bottom { font-size: 1rem; }
     }
 
-    /* ===== 个性化开场动画 ===== */
-    .personalized-intro {
-      animation: fadeIn 1s ease;
-    }
-
-    .personalized-intro .intro-content {
-      text-align: center;
-      animation: scaleIn 0.8s ease-out;
-    }
-
-    .personalized-intro .intro-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      color: var(--text);
-      margin-bottom: 1rem;
-      animation: slideUp 0.8s ease-out 0.3s both;
-    }
-
-    .personalized-intro .intro-subtitle {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 1.2rem;
-      color: var(--text-soft);
-      letter-spacing: 0.3em;
-      animation: slideUp 0.8s ease-out 0.6s both;
-    }
-
-    .personalized-intro .intro-hearts-top,
-    .personalized-intro .intro-hearts-bottom {
-      font-size: 1.5rem;
-      line-height: 2;
-      animation: fadeIn 0.5s ease-out 0.9s both;
-      opacity: 0.6;
-    }
-
-    @keyframes scaleIn {
-      from {
-        opacity: 0;
-        transform: scale(0.8);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -1141,14 +1096,6 @@
       {
         type: 'hero',
         label: '首页'
-      },
-      // 章节过渡页：相知
-      {
-        type: 'chapter',
-        icon: '💫',
-        title: '相知',
-        subtitle: '2019 · 一切美好的开始',
-        label: '相知'
       },
       // 2019·02 梦开始的地方 (4张)
       {
@@ -2809,59 +2756,6 @@
       }, 5000);
 
       console.log('🎵 音乐渐强效果已加载！');
-    })();
-
-    // ===== 🎬 开场动画 =====
-    (function() {
-      var startOverlay = document.getElementById('startOverlay');
-      if (!startOverlay) return;
-
-      // 个性化开场
-      function createPersonalizedIntro() {
-        var intro = document.createElement('div');
-        intro.className = 'personalized-intro';
-        intro.innerHTML = `
-          <div class="intro-content">
-            <div class="intro-hearts-top">${Array(15).fill('💕').join('')}</div>
-            <h1 class="intro-title">致 熊文靓</h1>
-            <p class="intro-subtitle">这是我们的故事</p>
-            <div class="intro-hearts-bottom">${Array(15).fill('❤️').join('')}</div>
-          </div>
-        `;
-        intro.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(135deg, #fdf8f4 0%, #f5ede6 50%, #e8c5b8 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10000;
-          animation: fadeIn 1s ease;
-        `;
-        
-        document.body.appendChild(intro);
-        
-        setTimeout(function() {
-          intro.style.animation = 'fadeOut 1s ease forwards';
-          setTimeout(function() {
-            intro.remove();
-          }, 1000);
-        }, 2500);
-      }
-
-      // 监听开始按钮
-      var startBtn = document.getElementById('startBtn');
-      if (startBtn) {
-        var originalHandler = startBtn.onclick;
-        startBtn.addEventListener('click', function() {
-          setTimeout(createPersonalizedIntro, 500);
-        });
-      }
-
-      console.log('🎬 开场动画系统已加载！');
     })();
 
     // ===== 💫 图片悬浮光效 =====
