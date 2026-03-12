@@ -2569,12 +2569,12 @@
 
       // 启用打字机效果
       setTimeout(function() {
-        // 信件正文
-        applyTypewriter('.letter-body', 60);
-        // 章节标题
-        applyTypewriter('.chapter-title', 80);
-        // 终章内容
-        applyTypewriter('.final-content p', 50);
+        // 信件正文（已禁用 - 内容较长，打字效果影响体验）
+        // applyTypewriter('.letter-body', 60);
+        // 章节标题（已禁用 - 避免排版问题）
+        // applyTypewriter('.chapter-title', 80);
+        // 终章内容（已禁用 - 内容较长，打字效果影响体验）
+        // applyTypewriter('.final-content p', 50);
       }, 2000);
 
       console.log('⌨️ 打字机效果系统已加载！');
