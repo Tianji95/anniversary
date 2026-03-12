@@ -2567,6 +2567,18 @@
         }
       };
 
+      // 启用打字机效果
+      setTimeout(function() {
+        // 信件正文
+        applyTypewriter('.letter-body', 40);
+        // 图片引言
+        applyTypewriter('.media-quote', 30);
+        // 章节标题
+        applyTypewriter('.chapter-title', 60);
+        // 终章内容
+        applyTypewriter('.final-content p', 35);
+      }, 2000);
+
       console.log('⌨️ 打字机效果系统已加载！');
     })();
 
