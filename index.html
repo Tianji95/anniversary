@@ -564,8 +564,10 @@
     .final-heart {
       font-size: 2rem;
       color: var(--rose);
-      margin-top: 1rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
       animation: heartBeat 1.5s ease-in-out infinite;
+      display: block;
     }
 
     @keyframes heartBeat {
@@ -576,12 +578,15 @@
     }
 
     .final-footer {
-      margin-top: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 100px;
       font-size: 0.85rem;
       color: var(--text-soft);
       letter-spacing: 0.15em;
       opacity: 0;
       animation: fadeUp 1s ease 1.2s forwards;
+      display: block;
+      padding-bottom: 20px;
     }
 
     /* ===== 时间线动画 ===== */
@@ -913,9 +918,10 @@
       .final-title { font-size: 1.8rem; }
       .final-subtitle { font-size: 1.2rem; }
       .final-content { font-size: 1rem; line-height: 1.8; }
-      .slide-final { padding: 2rem 1rem 5rem 1rem; }
+      .slide-final { padding: 2rem 1rem 8rem 1rem; min-height: 100vh; }
       .final-ornament { font-size: 2rem; margin-bottom: 1rem; }
-      .final-footer { margin-bottom: 60px; }
+      .final-heart { font-size: 1.5rem; margin-top: 0.5rem; }
+      .final-footer { margin-bottom: 80px; margin-top: 0.5rem; padding-bottom: 30px; }
       
       /* 时间轴手机端优化 */
       .hero-timeline {
