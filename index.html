@@ -1670,26 +1670,11 @@
 
     // ===== CDN配置（jsDelivr加速国内访问） =====
     var CDN_BASE = 'https://cdn.jsdelivr.net/gh/Tianji95/anniversary@main/';
-    var GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/Tianji95/anniversary/main/';
 
     // ===== URL编码函数（处理中文字符 + CDN加速） =====
     function encodeUrl(url) {
       // 如果已经是完整URL，直接返回
       if (url.startsWith('http')) return url;
-
-      // 视频文件使用GitHub raw（避免CDN对大视频的问题）
-      if (url.endsWith('.mp4') || url.endsWith('.MP4')) {
-        try {
-          var parts = url.split('/');
-          var encodedParts = parts.map(function(part, index) {
-            if (index === 0 || part === '') return part;
-            return encodeURIComponent(part);
-          });
-          return GITHUB_RAW_BASE + encodedParts.join('/');
-        } catch (e) {
-          return GITHUB_RAW_BASE + url;
-        }
-      }
 
       try {
         var parts = url.split('/');
@@ -1697,7 +1682,7 @@
           if (index === 0 || part === '') return part;
           return encodeURIComponent(part);
         });
-        // 使用jsDelivr CDN加速
+        // 所有资源统一使用jsDelivr CDN加速
         return CDN_BASE + encodedParts.join('/');
       } catch (e) {
         return CDN_BASE + url;
