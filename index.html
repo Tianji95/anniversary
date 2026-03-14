@@ -500,10 +500,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 3rem 2rem 6rem 2rem;
+      padding: 3rem 2rem 8rem 2rem;
       text-align: center;
-      overflow-y: auto;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch;
+      height: auto;
+      min-height: 100vh;
     }
 
     .final-ornament {
@@ -565,9 +568,10 @@
       font-size: 2rem;
       color: var(--rose);
       margin-top: 2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       animation: heartBeat 1.5s ease-in-out infinite;
       display: block;
+      flex-shrink: 0;
     }
 
     @keyframes heartBeat {
@@ -579,14 +583,15 @@
 
     .final-footer {
       margin-top: 1rem;
-      margin-bottom: 100px;
+      margin-bottom: 120px;
       font-size: 0.85rem;
       color: var(--text-soft);
       letter-spacing: 0.15em;
       opacity: 0;
       animation: fadeUp 1s ease 1.2s forwards;
       display: block;
-      padding-bottom: 20px;
+      padding-bottom: 30px;
+      flex-shrink: 0;
     }
 
     /* ===== 时间线动画 ===== */
