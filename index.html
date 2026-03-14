@@ -499,9 +499,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 4rem 2rem;
+      justify-content: flex-start;
+      padding: 3rem 2rem 6rem 2rem;
       text-align: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .final-ornament {
@@ -910,7 +912,10 @@
       .nav-arrow { width: 32px; height: 32px; font-size: 1rem; }
       .final-title { font-size: 1.8rem; }
       .final-subtitle { font-size: 1.2rem; }
-      .final-content { font-size: 1rem; }
+      .final-content { font-size: 1rem; line-height: 1.8; }
+      .slide-final { padding: 2rem 1rem 5rem 1rem; }
+      .final-ornament { font-size: 2rem; margin-bottom: 1rem; }
+      .final-footer { margin-bottom: 60px; }
       
       /* 时间轴手机端优化 */
       .hero-timeline {
