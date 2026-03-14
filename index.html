@@ -492,6 +492,10 @@
     }
 
     /* ===== 情感终章 ===== */
+    .slide.slide-final {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+    }
     .slide-final {
       background:
         radial-gradient(ellipse at 50% 30%, rgba(201,132,106,0.15) 0%, transparent 50%),
@@ -502,11 +506,10 @@
       justify-content: flex-start;
       padding: 3rem 2rem 8rem 2rem;
       text-align: center;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch;
-      height: auto;
+      height: 100%;
       min-height: 100vh;
+      box-sizing: border-box;
     }
 
     .final-ornament {
@@ -923,7 +926,7 @@
       .final-title { font-size: 1.8rem; }
       .final-subtitle { font-size: 1.2rem; }
       .final-content { font-size: 1rem; line-height: 1.8; }
-      .slide-final { padding: 2rem 1rem 10rem 1rem; min-height: 100vh; padding-bottom: 150px; }
+      .slide.slide-final { padding: 2rem 1rem 12rem 1rem; min-height: 100vh; overflow-y: auto !important; }
       .final-ornament { font-size: 2rem; margin-bottom: 1rem; }
       .final-heart { font-size: 1.5rem; margin-top: 1rem; margin-bottom: 80px; }
       .final-footer { margin-bottom: 80px; margin-top: 0.5rem; padding-bottom: 30px; }
