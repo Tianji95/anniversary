@@ -495,6 +495,8 @@
     .slide.slide-final {
       overflow-y: auto !important;
       overflow-x: hidden !important;
+      height: auto !important;
+      min-height: 100vh;
     }
     .slide-final {
       background:
@@ -504,11 +506,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 3rem 2rem 8rem 2rem;
+      padding: 3rem 2rem 15rem 2rem;
       text-align: center;
       -webkit-overflow-scrolling: touch;
-      height: 100%;
-      min-height: 100vh;
       box-sizing: border-box;
     }
 
@@ -926,7 +926,7 @@
       .final-title { font-size: 1.8rem; }
       .final-subtitle { font-size: 1.2rem; }
       .final-content { font-size: 1rem; line-height: 1.8; }
-      .slide.slide-final { padding: 2rem 1rem 12rem 1rem; min-height: 100vh; overflow-y: auto !important; }
+      .slide.slide-final { padding: 2rem 1rem; padding-bottom: 350px !important; min-height: 100vh; overflow-y: auto !important; height: auto !important; }
       .final-ornament { font-size: 2rem; margin-bottom: 1rem; }
       .final-heart { font-size: 1.5rem; margin-top: 1rem; margin-bottom: 80px; }
       .final-footer { margin-bottom: 80px; margin-top: 0.5rem; padding-bottom: 30px; }
@@ -1480,7 +1480,7 @@
       },
       {
         type: 'video',
-        src: 'resources/202107-婚纱照/9月25日 郑天季 熊文靓441867138@qq.com.mp4',
+        src: 'resources/202107-婚纱照/婚纱照视频_small.mp4',
         poster: 'resources/202107-婚纱照/202107120114-034.jpg',
         date: '2021 · 07',
         title: '婚纱照 · 视频',
