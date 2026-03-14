@@ -138,12 +138,30 @@
 
     /* 分类标签 */
     .indicator-group-label {
-      font-size: 0.6rem;
-      color: var(--text-soft);
-      opacity: 0.5;
+      font-size: 0.65rem;
+      color: var(--rose);
+      opacity: 0.8;
       text-align: right;
-      padding: 5px 0;
+      padding: 8px 0 15px 0;
       letter-spacing: 0.15em;
+      border-bottom: 1px solid rgba(201, 132, 106, 0.2);
+      margin-bottom: 5px;
+      font-weight: 300;
+    }
+
+    .indicator-period {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .indicator-year {
+      font-size: 0.55rem;
+      color: var(--text-soft);
+      margin-left: 8px;
+      opacity: 0.6;
+      white-space: nowrap;
     }
 
     /* ===== 导航箭头 ===== */
@@ -1797,19 +1815,18 @@
       sliderContainer.appendChild(slideEl);
     });
 
-    // 创建指示器（带分组标签）
-    var lastGroup = '';
+    // 创建指示器（带时期标记）
+    var lastYear = '';
     slidesData.forEach(function(slide, index) {
-      var group = slide.type === 'hero' ? '开始' :
-                  slide.type === 'letter' ? '书信' :
-                  slide.type === 'final' ? '终章' : '回忆';
+      // 提取年份
+      var currentYear = slide.date ? slide.date.split(' · ')[0] : '';
 
-      if (group !== lastGroup && slide.label) {
-        var groupLabel = document.createElement('div');
-        groupLabel.className = 'indicator-group-label';
-        groupLabel.textContent = group;
-        pageIndicators.appendChild(groupLabel);
-        lastGroup = group;
+      if (currentYear && currentYear !== lastYear) {
+        var yearLabel = document.createElement('div');
+        yearLabel.className = 'indicator-group-label';
+        yearLabel.textContent = currentYear;
+        pageIndicators.appendChild(yearLabel);
+        lastYear = currentYear;
       }
 
       var dot = document.createElement('div');
@@ -1817,19 +1834,43 @@
       dot.dataset.page = index;
 
       if (slide.label) {
+        var periodContainer = document.createElement('div');
+        periodContainer.className = 'indicator-period';
+
+        var dotWrapper = document.createElement('div');
+        dotWrapper.appendChild(dot);
+
         var label = document.createElement('span');
         label.className = 'indicator-label';
         label.textContent = slide.label;
-        dot.appendChild(label);
+        dotWrapper.appendChild(label);
+
+        periodContainer.appendChild(dotWrapper);
+
+        // 如果有具体日期（如 2019 · 02），显示年月
+        if (slide.date && slide.date.includes(' · ')) {
+          var yearSpan = document.createElement('span');
+          yearSpan.className = 'indicator-year';
+          yearSpan.textContent = slide.date.split(' · ')[0];
+          periodContainer.appendChild(yearSpan);
+        }
+
+        (function(idx) {
+          dotWrapper.addEventListener('click', function() {
+            goToPage(idx);
+          });
+        })(index);
+
+        pageIndicators.appendChild(periodContainer);
+      } else {
+        // Hero或Final页面
+        (function(idx) {
+          dot.addEventListener('click', function() {
+            goToPage(idx);
+          });
+        })(index);
+        pageIndicators.appendChild(dot);
       }
-
-      (function(idx) {
-        dot.addEventListener('click', function() {
-          goToPage(idx);
-        });
-      })(index);
-
-      pageIndicators.appendChild(dot);
     });
 
     var indicatorDots = pageIndicators.querySelectorAll('.indicator-dot');
